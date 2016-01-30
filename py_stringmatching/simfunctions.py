@@ -6,32 +6,13 @@ import math
 
 import utils
 
-#@todo: add examples in the comments
-# sequence based similarity measures
 
-# levenshtein
-@utils.check_args_for_none
-@utils.check_strings_for_nulls
-def levenshtein(string1, string2):
-    """
-
-    Args:
-        string1, string2 (str): Input strings
-
-    Returns:
-        If string1 and string2 are valid strings then
-            Levenshtein distance (float) between two strings is returned.
-        else:
-            NaN (from numpy) is returned
-    Notes:
-        This function internally uses python-levenshtein package
-
-    """
-    return Levenshtein.distance(string1, string2)
+# @todo: add examples in the comments
+# ---------------------- sequence based similarity measures  ----------------------
 
 # jaro
-@utils.check_args_for_none
-@utils.check_strings_for_nulls
+@utils.sim_check_for_none
+@utils.sim_check_for_empty
 def jaro(string1, string2):
     """
 
@@ -41,16 +22,16 @@ def jaro(string1, string2):
     Returns:
         If string1 and string2 are valid strings then
             jaro similarity (float) between two strings is returned.
-        else:
-            NaN (from numpy) is returned
+
     Notes:
         This function internally uses python-levenshtein package
     """
     return Levenshtein.jaro(string1, string2)
 
+
 # jaro-winkler
-@utils.check_args_for_none
-@utils.check_strings_for_nulls
+@utils.sim_check_for_none
+@utils.sim_check_for_empty
 def jaro_winkler(string1, string2, prefix_weight=0.1):
     """
 
@@ -61,8 +42,7 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     Returns:
         If string1 and string2 are valid strings then
             jaro-winkler similarity (float) between two strings is returned.
-        else:
-            NaN (from numpy) is returned
+
     Notes:
         This function internally uses python-levenshtein package
 
@@ -70,11 +50,30 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
 
 
-# token based similarity measures
+# levenshtein
+@utils.sim_check_for_none
+def levenshtein(string1, string2):
+    """
 
-## set based similarity measures
-@utils.check_args_for_none
-@utils.check_tokens_for_nulls
+    Args:
+        string1, string2 (str): Input strings
+
+    Returns:
+        If string1 and string2 are valid strings then
+            Levenshtein distance (float) between two strings is returned.
+
+    Notes:
+        This function internally uses python-levenshtein package
+
+    """
+    return Levenshtein.distance(string1, string2)
+
+
+# ---------------------- token based similarity measures  ----------------------
+
+# ---------------------- set based similarity measures  ----------------------
+@utils.sim_check_for_none
+@utils.sim_check_for_empty
 def overlap(set1, set2):
     """
 
@@ -85,27 +84,19 @@ def overlap(set1, set2):
     Returns:
         If set1 and set2 are valid sets/lists or single values then
             overlap similarity (float) between two sets is returned.
-        else:
-            NaN (from numpy) is returned
-
+\
     """
-
     if not isinstance(set1, set):
-        if not isinstance(set1, list):
-            set1 = [set1]
         set1 = set(set1)
     if not isinstance(set2, set):
-        if not isinstance(set1, list):
-            set1 = [set1]
         set2 = set(set2)
 
     return float(len(set1 & set2))
 
 
-
-## bag based similarity measures
-@utils.check_args_for_none
-@utils.check_tokens_for_nulls
+# ---------------------- bag based similarity measures  ----------------------
+@utils.sim_check_for_none
+@utils.sim_check_for_empty
 def cosine(bag1, bag2):
     """
     Cosine similarity between two lists.
@@ -117,18 +108,8 @@ def cosine(bag1, bag2):
     Returns:
         If bag1 and bag2 are valid lists or single values then
             cosine similarity (float) between two sets is returned.
-        else:
-            NaN (from numpy) is returned
 
     """
-
-    if not isinstance(bag1, list):
-        bag1 = [bag1]
-    if not isinstance(bag2, list):
-        bag2 = [bag2]
-
-    if len(bag1) == 0 or len(bag2) == 0:
-        return 0.0
 
     c1 = collections.Counter(bag1)
     c2 = collections.Counter(bag2)
@@ -136,13 +117,9 @@ def cosine(bag1, bag2):
     c1_mag = sum(c1.values())
     c2_mag = sum(c2.values())
 
-    int_mag = float(sum((c1&c2).values()))
-    return int_mag/math.sqrt(c1_mag*c2_mag)
+    int_mag = float(sum((c1 & c2).values()))
+    return int_mag / math.sqrt(c1_mag * c2_mag)
 
 
 
-
-
-
-
-# hybrid similarity measures
+    # hybrid similarity measures

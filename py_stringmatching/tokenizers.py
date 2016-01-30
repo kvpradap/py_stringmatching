@@ -1,6 +1,8 @@
 from .compat import _range
+import utils
 
 #@todo: add examples in the comments
+@utils.tok_check_for_none
 def qgram(input_string, qval=2):
     """
     QGram tokenizer.  A q-gram is defined as all sequences of q characters. Q-grams are also known as n-grams and
@@ -13,12 +15,9 @@ def qgram(input_string, qval=2):
     Returns:
         If the input string is not None and qval is less than length of the input  then,
         a list of qgrams is returned.
-        In all the other cases, empty list is returned
+
     """
     qgram_list = []
-
-    if input_string is None:
-        return qgram_list
 
     if len(input_string) < qval or qval < 1:
         return qgram_list
@@ -26,7 +25,7 @@ def qgram(input_string, qval=2):
     qgram_list = [input_string[i:i+qval] for i in _range(len(input_string)-(qval-1))]
     return qgram_list
 
-
+@utils.tok_check_for_none
 def delimiter(input_string, delim_str=' '):
     """
     Delimiter based tokenizer
@@ -38,16 +37,11 @@ def delimiter(input_string, delim_str=' '):
 
     Returns:
         If the input string is not None and delim_str is not None, then a list of tokens are returned.
-        In all the other cases, empty list is returned.
+
     """
-
-    token_list = []
-    if input_string is None or delim_str is None:
-        return token_list
-
     return input_string.split(delim_str)
 
-
+@utils.tok_check_for_none
 def whitespace(input_string):
     """
     White space based tokenizer
@@ -57,12 +51,8 @@ def whitespace(input_string):
 
     Returns:
         If the input string is not None, then a list of tokens are returned.
-        In all the other cases, empty list is returned.
-    """
-    token_list = []
-    if input_string is None:
-        return token_list
 
+    """
     return input_string.split()
 
 
