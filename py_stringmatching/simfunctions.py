@@ -73,6 +73,7 @@ def levenshtein(string1, string2):
 
 # ---------------------- set based similarity measures  ----------------------
 @utils.sim_check_for_none
+@utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def overlap(set1, set2):
     """
@@ -86,6 +87,7 @@ def overlap(set1, set2):
             overlap similarity (float) between two sets is returned.
 \
     """
+
     if not isinstance(set1, set):
         set1 = set(set1)
     if not isinstance(set2, set):
@@ -96,6 +98,7 @@ def overlap(set1, set2):
 
 # ---------------------- bag based similarity measures  ----------------------
 @utils.sim_check_for_none
+@utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def cosine(bag1, bag2):
     """

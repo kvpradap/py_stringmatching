@@ -98,6 +98,7 @@ class LevenshteinTestCases(unittest.TestCase):
 # ---------------------- set based similarity measures  ----------------------
 class OverlapTestCases(unittest.TestCase):
     def test_valid_input(self):
+        self.assertEqual(overlap([], []), 1.0)
         self.assertEqual(overlap(['data',  'science'], ['data']), 1.0/min(2.0, 1.0))
         self.assertEqual(overlap(['data', 'science'], ['science', 'good']), 1.0/min(2.0, 3.0))
         self.assertEqual(overlap([], ['data']), 0)
@@ -119,7 +120,7 @@ class CosineTestCases(unittest.TestCase):
     def test_valid_input(self):
         NONQ_FROM = 'The quick brown fox jumped over the lazy dog.'
         NONQ_TO = 'That brown dog jumped over the fox.'
-        self.assertEqual(cosine([], []), 0) # check
+        self.assertEqual(cosine([], []), 1) # check-- done. both simmetrics, abydos return 1.
         self.assertEqual(cosine(['the', 'quick'], []), 0)
         self.assertEqual(cosine([], ['the', 'quick']), 0)
         self.assertAlmostEqual(cosine(whitespace(NONQ_TO), whitespace(NONQ_FROM)),
