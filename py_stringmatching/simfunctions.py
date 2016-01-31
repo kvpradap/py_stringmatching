@@ -91,7 +91,7 @@ def overlap(set1, set2):
     if not isinstance(set2, set):
         set2 = set(set2)
 
-    return float(len(set1 & set2))
+    return float(len(set1 & set2))/min(len(set1), len(set2))
 
 
 # ---------------------- bag based similarity measures  ----------------------

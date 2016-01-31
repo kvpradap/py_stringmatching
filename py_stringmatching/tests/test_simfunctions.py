@@ -1,8 +1,56 @@
 from __future__ import unicode_literals
+import math
 from nose.tools import *
 import unittest
 
-from py_stringmatching.simfunctions import levenshtein
+from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler
+from py_stringmatching.simfunctions import overlap
+from py_stringmatching.simfunctions import cosine
+
+from py_stringmatching.tokenizers import qgram, whitespace
+
+# ---------------------- sequence based similarity measures  ----------------------
+class JaroTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        # https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+        self.assertAlmostEqual(jaro('MARTHA', 'MARHTA'), 0.9444444444444445)
+        self.assertAlmostEqual(jaro('DWAYNE', 'DUANE'), 0.8222222222222223)
+        self.assertAlmostEqual(jaro('DIXON', 'DICKSONX'), 0.7666666666666666)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        jaro(None, 'MARHTA')
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        jaro('MARHTA', None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        jaro(None, None)
+
+
+class JaroWinklerTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        # https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+        self.assertAlmostEqual(jaro_winkler('MARTHA', 'MARHTA'), 0.9611111111111111)
+        self.assertAlmostEqual(jaro_winkler('DWAYNE', 'DUANE'), 0.84)
+        self.assertAlmostEqual(jaro_winkler('DIXON', 'DICKSONX'), 0.8133333333333332)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        jaro_winkler(None, 'MARHTA')
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        jaro_winkler('MARHTA', None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        jaro_winkler(None, None)
+
+
+
 
 class LevenshteinTestCases(unittest.TestCase):
     def test_valid_input(self):
@@ -43,3 +91,46 @@ class LevenshteinTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         levenshtein(None, None)
+
+
+# ---------------------- token based similarity measures  ----------------------
+
+# ---------------------- set based similarity measures  ----------------------
+class OverlapTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(overlap(['data',  'science'], ['data']), 1.0/min(2.0, 1.0))
+        self.assertEqual(overlap(['data', 'science'], ['science', 'good']), 1.0/min(2.0, 3.0))
+        self.assertEqual(overlap([], ['data']), 0)
+        self.assertEqual(overlap(['data', 'data', 'science'],['data', 'management']), 1.0/min(3.0, 2.0))
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        overlap(['a'], None)
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        overlap(None, ['b'])
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        overlap(None, None)
+
+
+# ---------------------- bag based similarity measures  ----------------------
+class CosineTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        NONQ_FROM = 'The quick brown fox jumped over the lazy dog.'
+        NONQ_TO = 'That brown dog jumped over the fox.'
+        self.assertEqual(cosine([], []), 0) # check
+        self.assertEqual(cosine(['the', 'quick'], []), 0)
+        self.assertEqual(cosine([], ['the', 'quick']), 0)
+        self.assertAlmostEqual(cosine(whitespace(NONQ_TO), whitespace(NONQ_FROM)),
+                               4/math.sqrt(9*7))
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        cosine(['a'], None)
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        cosine(None, ['b'])
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        cosine(None, None)
