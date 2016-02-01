@@ -63,6 +63,9 @@ def hamming_distance(string1, string2):
 
     Notes:
         This function has same implementation as hammingDistance in Python3
+        # pradap: not required. policy: give information that the user should be aware of but not required for
+        # most cases
+
 
     Examples:
         >>> hamming_distance('', '')
@@ -100,9 +103,12 @@ def levenshtein(string1, string2):
 # ---------------------- set based similarity measures  ----------------------
 
 @utils.sim_check_for_none
+#@utils.sim_check_for_exact_match???
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
     """
+    Jaccard distance. some explanation.
+    formula
 
     Args:
         set1, set2 (set): Input sets.
@@ -112,7 +118,7 @@ def jaccard(set1, set2):
         If set1 and set2 are valid sets/lists or single values then
             jaccard similarity (float) between two sets is returned.
     Notes:
-        This function calculate the Jaccard similarity and not Jaccard distance.
+        This function calculate the Jaccard similarity and not Jaccard distance. # give the formula
 
     Examples:
         >>> jaccard(['data', 'science'], ['data'])
@@ -122,7 +128,7 @@ def jaccard(set1, set2):
         >>> jaccard(['data', 'management'], ['data', 'data', 'science'])
         0.3333333333333333
     """
-    set1 = set(set1) if not isinstance(set1, set) else set1
+    set1 = set(set1) if not isinstance(set1, set) else set1 # prefer readability
     set2 = set(set2) if not isinstance(set2, set) else set2
     return float(len(set1 & set2)) / float(len(set1 | set2))
 
