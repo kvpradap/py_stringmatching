@@ -21,7 +21,7 @@ def jaro(string1, string2):
 
     Returns:
         If string1 and string2 are valid strings then
-            jaro similarity (float) between two strings is returned.
+        jaro similarity (float) between two strings is returned.
 
     Notes:
         This function internally uses python-levenshtein package
@@ -54,7 +54,9 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
-    This function calculates the hamming distance between the two equal length strings. It is the number of positions at which the corresponding symbols are different.
+    This function calculates the hamming distance between the two equal length strings. It is the number of positions at
+    which the corresponding symbols are different.
+
     Args:
         string1, string2 (str): Input strings
 
@@ -93,6 +95,8 @@ def levenshtein(string1, string2):
     return Levenshtein.distance(string1, string2)
 
 
+
+
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
@@ -103,7 +107,10 @@ def levenshtein(string1, string2):
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
     """
-    This function calculates the Jaccard similarity coefficient. The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of the intersection divided by the size of the union of the sample sets.
+    This function calculates the Jaccard similarity coefficient.
+    The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of
+    the intersection divided by the size of the union of the sample sets.
+
     Args:
         set1, set2 (set): Input sets.
 
@@ -166,7 +173,7 @@ def cosine(bag1, bag2):
 
     Returns:
         If bag1 and bag2 are valid lists or single values then
-            cosine similarity (float) between two sets is returned.
+            cosine similarity (float) between two bags is returned.
 
     """
 
@@ -181,4 +188,32 @@ def cosine(bag1, bag2):
 
 
 
-    # hybrid similarity measures
+# hybrid similarity measures
+@utils.sim_check_for_none
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def monge_elkan(bag1, bag2, sim_func=levenshtein):
+    """
+    Compute monge elkan similarity measures between two lists.
+    Monge-Elkan measure is not symmetric. There is a variant that considers symmetricness.
+    But currently we just implement the monge elkan measure as given in the DI book.
+
+    Args:
+        bag1, bag2 (list): Input lists
+        sim_func: Similarity function to be used for each pair of tokens. This is expected to be a sequence-based
+        similarity measure
+
+    Returns:
+        If bag1 and bag2 are valid lists then monge-elkan similarity between the two bags is returned.
+
+    """
+    sum_of_maxes = 0
+    for t1 in bag1:
+        max_sim = float('-inf')
+        for t2 in bag2:
+            max_sim = max(max_sim, sim_func(t1, t2))
+        sum_of_maxes += max_sim
+    sim = float(sum_of_maxes)/float(len(bag1))
+    return sim
+
+

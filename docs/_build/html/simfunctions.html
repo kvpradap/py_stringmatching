@@ -113,7 +113,7 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dt>Returns:</dt>
 <dd><dl class="first last docutils">
 <dt>If bag1 and bag2 are valid lists or single values then</dt>
-<dd>cosine similarity (float) between two sets is returned.</dd>
+<dd>cosine similarity (float) between two bags is returned.</dd>
 </dl>
 </dd>
 </dl>
@@ -122,7 +122,9 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dl class="function">
 <dt id="py_stringmatching.simfunctions.hamming_distance">
 <code class="descclassname">py_stringmatching.simfunctions.</code><code class="descname">hamming_distance</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringmatching.simfunctions.hamming_distance" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
+<dd><p>This function calculates the hamming distance between the two equal length strings. It is the number of positions at
+which the corresponding symbols are different.</p>
+<dl class="docutils">
 <dt>Args:</dt>
 <dd>string1, string2 (str): Input strings</dd>
 <dt>Returns:</dt>
@@ -131,8 +133,6 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dd>Hamming Distance distance (int) between two strings is returned.</dd>
 </dl>
 </dd>
-<dt>Notes:</dt>
-<dd>This function has same implementation as hammingDistance in Python3</dd>
 <dt>Examples:</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hamming_distance</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
 <span class="go">0</span>
@@ -151,7 +151,10 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dl class="function">
 <dt id="py_stringmatching.simfunctions.jaccard">
 <code class="descclassname">py_stringmatching.simfunctions.</code><code class="descname">jaccard</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringmatching.simfunctions.jaccard" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
+<dd><p>This function calculates the Jaccard similarity coefficient.
+The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of
+the intersection divided by the size of the union of the sample sets.</p>
+<dl class="docutils">
 <dt>Args:</dt>
 <dd>set1, set2 (set): Input sets.</dd>
 <dt>Returns:</dt>
@@ -160,8 +163,6 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dd>jaccard similarity (float) between two sets is returned.</dd>
 </dl>
 </dd>
-<dt>Notes:</dt>
-<dd>This function calculate the Jaccard similarity and not Jaccard distance.</dd>
 <dt>Examples:</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">jaccard</span><span class="p">([</span><span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;science&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">])</span>
 <span class="go">0.5</span>
@@ -182,11 +183,8 @@ There are multiple definitions of cosine similarity. This function implements oc
 <dt>Args:</dt>
 <dd>string1, string2 (str): Input strings</dd>
 <dt>Returns:</dt>
-<dd><dl class="first last docutils">
-<dt>If string1 and string2 are valid strings then</dt>
-<dd>jaro similarity (float) between two strings is returned.</dd>
-</dl>
-</dd>
+<dd>If string1 and string2 are valid strings then
+jaro similarity (float) between two strings is returned.</dd>
 <dt>Notes:</dt>
 <dd>This function internally uses python-levenshtein package</dd>
 </dl>
@@ -224,6 +222,22 @@ prefix_weight: Weight that should be given to the prefix (defaults to 0.1)</dd>
 </dd>
 <dt>Notes:</dt>
 <dd>This function internally uses python-levenshtein package</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py_stringmatching.simfunctions.monge_elkan">
+<code class="descclassname">py_stringmatching.simfunctions.</code><code class="descname">monge_elkan</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py_stringmatching.simfunctions.monge_elkan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute monge elkan similarity measures between two lists.
+Monge-Elkan measure is not symmetric. There is a variant that considers symmetricness.
+But currently we just implement the monge elkan measure as given in the DI book.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>bag1, bag2 (list): Input lists
+sim_func: Similarity function to be used for each pair of tokens. This is expected to be a sequence-based
+similarity measure</dd>
+<dt>Returns:</dt>
+<dd>If bag1 and bag2 are valid lists then monge-elkan similarity between the two bags is returned.</dd>
 </dl>
 </dd></dl>
 
