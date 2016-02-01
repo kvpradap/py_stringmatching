@@ -6,6 +6,8 @@ import unittest
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler
 from py_stringmatching.simfunctions import overlap
 from py_stringmatching.simfunctions import cosine
+from py_stringmatching.simfunctions import hamming_distance
+from py_stringmatching.simfunctions import jaccard
 
 from py_stringmatching.tokenizers import qgram, whitespace
 
@@ -93,6 +95,48 @@ class LevenshteinTestCases(unittest.TestCase):
         levenshtein(None, None)
 
 
+class HammingDistanceTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(hamming_distance('-789', 'john'), 4)
+        self.assertEqual(hamming_distance('a', '*'), 1)
+        self.assertEqual(hamming_distance('b', 'a'), 1)
+        self.assertEqual(hamming_distance('abc', 'p q'), 3)
+        self.assertEqual(hamming_distance('karolin', 'kathrin'), 3)
+        self.assertEqual(hamming_distance('KARI', 'kari'), 4)
+
+    def test_valid_input_compatibility(self):
+        self.assertEqual(hamming_distance(u'karolin', u'kathrin'), 3)
+        self.assertEqual(hamming_distance(u'', u''), 0)
+        str_1 = u'foo'.encode(encoding='UTF-8', errors='strict')
+        str_2 = u'bar'.encode(encoding='UTF-8', errors='strict')
+        self.assertEqual(hamming_distance(str_1, str_2), 3)
+        self.assertEqual(hamming_distance(str_1, str_1), 0)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        hamming_distance('a', None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        hamming_distance(None, 'b')
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        hamming_distance(None, None)
+
+    @raises(ValueError)
+    def test_invalid_input4(self):
+        hamming_distance('a', '')
+
+    @raises(ValueError)
+    def test_invalid_input5(self):
+        hamming_distance('', 'This is a long string')
+
+    @raises(ValueError)
+    def test_invalid_input6(self):
+        hamming_distance('ali', 'alex')
+
+
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
@@ -112,6 +156,34 @@ class OverlapTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         overlap(None, None)
+
+
+class JaccardTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(jaccard(['data', 'science'], ['data']), 1.0 / 2.0)
+        self.assertEqual(jaccard(['data', 'science'], ['science', 'good']), 1.0 / 3.0)
+        self.assertEqual(jaccard([], ['data']), 0)
+        self.assertEqual(jaccard(['data', 'data', 'science'], ['data', 'management']), 1.0 / 3.0)
+        self.assertEqual(jaccard(['data', 'management'], ['data', 'data', 'science']), 1.0 / 3.0)
+        self.assertEqual(jaccard([], []), 0.0)
+        self.assertEqual(jaccard(set([]), set([])), 0.0)
+        self.assertEqual(jaccard({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}), 3.0 / 8.0)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        jaccard(1, 1)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        jaccard(['a'], None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        jaccard(None, ['b'])
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        jaccard(None, None)
 
 
 # ---------------------- bag based similarity measures  ----------------------

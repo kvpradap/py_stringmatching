@@ -7,7 +7,17 @@ from the similarity functions is the implementation of checking functions can ch
 our decision to handle missing values.
 """
 
-
+def sim_check_for_same_len(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if args[0] is None:
+            raise TypeError("string1 is None")
+        if args[1] is None:
+            raise TypeError("string2 is None")
+        if len(args[0]) != len(args[1]):
+            raise ValueError("Undefined for sequences of unequal length")
+        return func(*args, **kwargs)
+    return decorator
 
 def sim_check_for_none(func):
     @functools.wraps(func)
