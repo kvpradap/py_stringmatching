@@ -54,15 +54,13 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
+    This function calculates the hamming distance between the two equal length strings. It is the number of positions at which the corresponding symbols are different.
     Args:
         string1, string2 (str): Input strings
 
     Returns:
         If string1 and string2 are of same length the
             Hamming Distance distance (int) between two strings is returned.
-
-    Notes:
-        This function has same implementation as hammingDistance in Python3
 
     Examples:
         >>> hamming_distance('', '')
@@ -99,11 +97,13 @@ def levenshtein(string1, string2):
 
 # ---------------------- set based similarity measures  ----------------------
 
+
 @utils.sim_check_for_none
+@utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
     """
-
+    This function calculates the Jaccard similarity coefficient. The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of the intersection divided by the size of the union of the sample sets.
     Args:
         set1, set2 (set): Input sets.
 
@@ -111,8 +111,6 @@ def jaccard(set1, set2):
     Returns:
         If set1 and set2 are valid sets/lists or single values then
             jaccard similarity (float) between two sets is returned.
-    Notes:
-        This function calculate the Jaccard similarity and not Jaccard distance.
 
     Examples:
         >>> jaccard(['data', 'science'], ['data'])
@@ -122,8 +120,11 @@ def jaccard(set1, set2):
         >>> jaccard(['data', 'management'], ['data', 'data', 'science'])
         0.3333333333333333
     """
-    set1 = set(set1) if not isinstance(set1, set) else set1
-    set2 = set(set2) if not isinstance(set2, set) else set2
+
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
     return float(len(set1 & set2)) / float(len(set1 | set2))
 
 

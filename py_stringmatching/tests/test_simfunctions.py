@@ -166,8 +166,8 @@ class JaccardTestCases(unittest.TestCase):
         self.assertEqual(jaccard([], ['data']), 0)
         self.assertEqual(jaccard(['data', 'data', 'science'], ['data', 'management']), 1.0 / 3.0)
         self.assertEqual(jaccard(['data', 'management'], ['data', 'data', 'science']), 1.0 / 3.0)
-        self.assertEqual(jaccard([], []), 0.0)
-        self.assertEqual(jaccard(set([]), set([])), 0.0)
+        self.assertEqual(jaccard([], []), 1.0)
+        self.assertEqual(jaccard(set([]), set([])), 1.0)
         self.assertEqual(jaccard({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}), 3.0 / 8.0)
 
     @raises(TypeError)
