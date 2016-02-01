@@ -7,6 +7,7 @@ from the similarity functions is the implementation of checking functions can ch
 our decision to handle missing values.
 """
 
+
 def sim_check_for_same_len(func):
     @functools.wraps(func)
     def decorator(*args, **kwargs):
@@ -19,7 +20,6 @@ def sim_check_for_same_len(func):
         return func(*args, **kwargs)
     return decorator
 
-def sim_check_for_none(func):
 
 def sim_check_for_exact_match(func):
     @functools.wraps(func)
@@ -28,6 +28,7 @@ def sim_check_for_exact_match(func):
             return 1.0
         return func(*args, **kwargs)
     return decorator
+
 
 def sim_check_for_empty(func):
     @functools.wraps(func)
@@ -47,7 +48,6 @@ def sim_check_for_none(func):
             raise TypeError("string2 is None")
         return func(*args, **kwargs)
     return decorator
-
 
 
 def tok_check_for_none(func):
