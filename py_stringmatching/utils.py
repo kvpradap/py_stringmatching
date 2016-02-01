@@ -20,6 +20,25 @@ def sim_check_for_same_len(func):
     return decorator
 
 def sim_check_for_none(func):
+
+def sim_check_for_exact_match(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if args[0] == args[1]:
+            return 1.0
+        return func(*args, **kwargs)
+    return decorator
+
+def sim_check_for_empty(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if len(args[0]) == 0 or len(args[1]) == 0:
+            return 0
+        return func(*args, **kwargs)
+    return decorator
+
+
+def sim_check_for_none(func):
     @functools.wraps(func)
     def decorator(*args, **kwargs):
         if args[0] is None:
@@ -30,13 +49,6 @@ def sim_check_for_none(func):
     return decorator
 
 
-def sim_check_for_empty(func):
-    @functools.wraps(func)
-    def decorator(*args, **kwargs):
-        if len(args[0]) == 0 or len(args[1]) == 0:
-            return 0
-        return func(*args, **kwargs)
-    return decorator
 
 def tok_check_for_none(func):
     @functools.wraps(func)
@@ -46,6 +58,9 @@ def tok_check_for_none(func):
             return empty_list
         return func(*args, **kwargs)
     return decorator
+
+
+
 
 
 
