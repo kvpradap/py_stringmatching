@@ -1,2 +1,2 @@
 # py-stringmatching
-Python library for string matching.
+Python library for string matching..
