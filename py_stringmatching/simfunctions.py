@@ -159,6 +159,41 @@ def overlap(set1, set2):
     return float(len(set1 & set2))/min(len(set1), len(set2))
 
 
+@utils.sim_check_for_none
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def tanimoto_coefficient(set1, set2):
+    """
+    This function calculates the Tanimoto coefficient.
+    Calculates the Tanimoto coefficient over two sets. The similarity is defined as the cosine of the angle between the sets expressed as sparse vectors. Source: https://github.com/Simmetrics
+
+
+    Args:
+        set1, set2 (set): Input sets.
+
+
+    Returns:
+        If set1 and set2 are valid sets/lists or single values then
+            Tanimoto coefficient (float) between two sets is returned.
+
+    Examples:
+        >>> tanimoto_coefficient(['data', 'science'], ['data'])
+        0.7071067811865475
+        >>> tanimoto_coefficient({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8})
+        0.5669467095138409
+        >>> tanimoto_coefficient(['data', 'management'], ['data', 'data', 'science'])
+        0.4999999999999999
+        >>> tanimoto_coefficient(['data', 'management'], ['data', 'management'])
+        1.0
+    """
+
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
+
+
 # ---------------------- bag based similarity measures  ----------------------
 @utils.sim_check_for_none
 @utils.sim_check_for_exact_match

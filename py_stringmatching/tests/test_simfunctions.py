@@ -8,6 +8,7 @@ from py_stringmatching.simfunctions import overlap
 from py_stringmatching.simfunctions import cosine
 from py_stringmatching.simfunctions import hamming_distance
 from py_stringmatching.simfunctions import jaccard
+from py_stringmatching.simfunctions import tanimoto_coefficient
 
 from py_stringmatching.tokenizers import qgram, whitespace
 
@@ -185,6 +186,38 @@ class JaccardTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         jaccard(None, None)
+
+
+class TanimotoCoefficientTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(tanimoto_coefficient(['data', 'science'], ['data']), 1.0 / (math.sqrt(2) * math.sqrt(1)))
+        self.assertEqual(tanimoto_coefficient(['data', 'science'], ['science', 'good']),
+                         1.0 / (math.sqrt(2) * math.sqrt(2)))
+        self.assertEqual(tanimoto_coefficient([], ['data']), 0.0)
+        self.assertEqual(tanimoto_coefficient(['data', 'data', 'science'], ['data', 'management']),
+                         1.0 / (math.sqrt(2) * math.sqrt(2)))
+        self.assertEqual(tanimoto_coefficient(['data', 'management'], ['data', 'data', 'science']),
+                         1.0 / (math.sqrt(2) * math.sqrt(2)))
+        self.assertEqual(tanimoto_coefficient([], []), 1.0)
+        self.assertEqual(tanimoto_coefficient(set([]), set([])), 1.0)
+        self.assertEqual(tanimoto_coefficient({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}),
+                         3.0 / (math.sqrt(4) * math.sqrt(7)))
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        tanimoto_coefficient(1, 1)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        tanimoto_coefficient(['a'], None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        tanimoto_coefficient(None, ['b'])
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        tanimoto_coefficient(None, None)
 
 
 # ---------------------- bag based similarity measures  ----------------------
