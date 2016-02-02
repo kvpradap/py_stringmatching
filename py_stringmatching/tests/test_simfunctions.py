@@ -9,6 +9,7 @@ from py_stringmatching.simfunctions import cosine
 from py_stringmatching.simfunctions import hamming_distance
 from py_stringmatching.simfunctions import jaccard
 from py_stringmatching.simfunctions import tanimoto_coefficient
+from py_stringmatching.simfunctions import needleman_wunsch
 
 from py_stringmatching.tokenizers import qgram, whitespace
 
@@ -136,6 +137,28 @@ class HammingDistanceTestCases(unittest.TestCase):
     @raises(ValueError)
     def test_invalid_input6(self):
         hamming_distance('ali', 'alex')
+
+
+class NeedlemanWunschTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(needleman_wunsch('dva', 'deeve'), 0)
+        self.assertEqual(needleman_wunsch('dva', 'deeve', 0), 2)
+        self.assertEqual(needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2: (int(2 if s1 == s2 else -1))), 1)
+        self.assertEqual(
+            needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2: (int(1 if s1 == s2 else -1))),
+            0)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        needleman_wunsch('a', None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        needleman_wunsch(None, 'b')
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        needleman_wunsch(None, None)
 
 
 # ---------------------- token based similarity measures  ----------------------

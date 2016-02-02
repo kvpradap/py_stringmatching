@@ -5,6 +5,8 @@ import Levenshtein
 import math
 
 import utils
+import numpy as np
+from .compat import _range
 
 
 # @todo: add examples in the comments
@@ -95,12 +97,48 @@ def levenshtein(string1, string2):
     return Levenshtein.distance(string1, string2)
 
 
+def sim_ident(s1, s2):
+    return int(s1 == s2)
+
+
+@utils.sim_check_for_none
+def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
+    """
+    Calculates the Needleman-Wunsch similarity score between two strings.
+    Args:
+        string1, string2 (str), gap_cost (int), sim-score(str, str) (function)
+
+    Returns:
+        If string1 and string2 are valid strings then
+            Needleman-Wunsch similarity (int) between two strings is returned.
+
+    Examples:
+        >>> needleman_wunsch('dva', 'deeva')
+        0
+        >>> needleman_wunsch('dva', 'deeve', 0)
+        2
+        >>> needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2 : (int(2 if s1 == s2 else -1)))
+        1
+        >>> needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else -1)))
+        0
+    """
+    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    for i in _range(len(string1) + 1):
+        dist_mat[i, 0] = -(i * gap_cost)
+    for j in _range(len(string2) + 1):
+        dist_mat[0, j] = -(j * gap_cost)
+    for i in _range(1, len(string1) + 1):
+        for j in _range(1, len(string2) + 1):
+            match = dist_mat[i - 1, j - 1] + sim_score(string1[i - 1], string2[j - 1])
+            delete = dist_mat[i - 1, j] - gap_cost
+            insert = dist_mat[i, j - 1] - gap_cost
+            dist_mat[i, j] = max(match, delete, insert)
+    return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
 
 
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
-
 
 @utils.sim_check_for_none
 @utils.sim_check_for_exact_match
