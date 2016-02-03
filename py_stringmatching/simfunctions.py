@@ -14,6 +14,7 @@ from .compat import _range
 
 # jaro
 @utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_empty
 def jaro(string1, string2):
     """
@@ -33,6 +34,7 @@ def jaro(string1, string2):
 
 # jaro-winkler
 @utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_empty
 def jaro_winkler(string1, string2, prefix_weight=0.1):
     """
@@ -52,7 +54,9 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
 
 
-# levenshtein
+# hamming distance
+@utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
@@ -80,6 +84,7 @@ def hamming_distance(string1, string2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_string_inputs
 def levenshtein(string1, string2):
     """
 
@@ -102,6 +107,7 @@ def sim_ident(s1, s2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_string_inputs
 def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
     """
     Calculates the Needleman-Wunsch similarity score between two strings.
@@ -141,6 +147,7 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 # ---------------------- set based similarity measures  ----------------------
 
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
@@ -174,6 +181,7 @@ def jaccard(set1, set2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def overlap(set1, set2):
@@ -198,6 +206,7 @@ def overlap(set1, set2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def tanimoto_coefficient(set1, set2):
@@ -234,6 +243,7 @@ def tanimoto_coefficient(set1, set2):
 
 # ---------------------- bag based similarity measures  ----------------------
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def cosine(bag1, bag2):
@@ -263,6 +273,7 @@ def cosine(bag1, bag2):
 
 # hybrid similarity measures
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def monge_elkan(bag1, bag2, sim_func=levenshtein):

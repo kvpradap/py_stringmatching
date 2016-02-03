@@ -1,11 +1,36 @@
 import functools
 import numpy as np
+import six
 
 """
 This module defines a list of decorator functions to check input strings/list. The reason this is separated
 from the similarity functions is the implementation of checking functions can change later, depending on
 our decision to handle missing values.
 """
+
+def sim_check_for_list_or_set_inputs(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if not isinstance(args[0], list):
+            if not isinstance(args[0], set):
+                raise TypeError('First argument is expected to be a python list or set')
+        if not isinstance(args[1], list):
+            if not isinstance(args[1], set):
+                raise TypeError('Second argument is expected to be a python list or set')
+        return func(*args, **kwargs)
+    return decorator
+
+
+def sim_check_for_string_inputs(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if not isinstance(args[0], six.string_types):
+            raise TypeError('First argument is expected to be a string')
+        if not isinstance(args[1], six.string_types):
+            raise TypeError('Second argument is expected to be a string')
+        return func(*args, **kwargs)
+    return decorator
+
 
 
 def sim_check_for_same_len(func):
@@ -56,6 +81,14 @@ def tok_check_for_none(func):
         empty_list = []
         if args[0] is None:
             return empty_list
+        return func(*args, **kwargs)
+    return decorator
+
+def tok_check_for_string_input(func):
+    @functools.wraps(func)
+    def decorator(*args, **kwargs):
+        if not isinstance(args[0], six.string_types):
+            raise TypeError('Input is expected to be a string')
         return func(*args, **kwargs)
     return decorator
 
