@@ -146,6 +146,19 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 
 # ---------------------- set based similarity measures  ----------------------
 
+#@todo need to work on this
+def cosine_set(set1, set2):
+
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+
+    int_mag = float(len(set1 & set2))
+    return int_mag / math.sqrt(len(set1) * len(set2))
+
+
+
 @utils.sim_check_for_none
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
@@ -209,6 +222,7 @@ def overlap(set1, set2):
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
+#@todo need to revisit this
 def tanimoto_coefficient(set1, set2):
     """
     This function calculates the Tanimoto coefficient.
@@ -246,6 +260,8 @@ def tanimoto_coefficient(set1, set2):
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
+
+#@todo need to revisit this definition
 def cosine(bag1, bag2):
     """
     Cosine similarity between two lists.
