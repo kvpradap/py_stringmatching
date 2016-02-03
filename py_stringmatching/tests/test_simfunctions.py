@@ -3,13 +3,10 @@ import math
 from nose.tools import *
 import unittest
 
-from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler
-from py_stringmatching.simfunctions import overlap
+from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
+from py_stringmatching.simfunctions import overlap, jaccard, tanimoto_coefficient
 from py_stringmatching.simfunctions import cosine
-from py_stringmatching.simfunctions import hamming_distance
-from py_stringmatching.simfunctions import jaccard
-from py_stringmatching.simfunctions import tanimoto_coefficient
-from py_stringmatching.simfunctions import needleman_wunsch
+from py_stringmatching.simfunctions import monge_elkan
 
 from py_stringmatching.tokenizers import qgram, whitespace
 
@@ -263,3 +260,19 @@ class CosineTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         cosine(None, None)
+
+
+
+# ---------------------- hybrid similarity measure  ----------------------
+class MongeElkanTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(monge_elkan([''], ['']), 1.0)
+
+        self.assertEqual(monge_elkan([''], ['a']), 1.0)
+        self.assertEqual(monge_elkan(['a'], ['a']), 1)
+
+        self.assertEqual(monge_elkan(['Niall'], ['Neal']), 2.0)
+        self.assertEqual(monge_elkan(['Niall'], ['Njall']), 1.0)
+        self.assertEqual(monge_elkan(['Niall'], ['Niel']), 2.0)
+        self.assertEqual(monge_elkan(['Niall'], ['Nigel']), 2.0)
+
