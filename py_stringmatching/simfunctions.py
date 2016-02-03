@@ -5,6 +5,8 @@ import Levenshtein
 import math
 
 import utils
+import numpy as np
+from .compat import _range
 
 
 # @todo: add examples in the comments
@@ -12,6 +14,7 @@ import utils
 
 # jaro
 @utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_empty
 def jaro(string1, string2):
     """
@@ -31,6 +34,7 @@ def jaro(string1, string2):
 
 # jaro-winkler
 @utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_empty
 def jaro_winkler(string1, string2, prefix_weight=0.1):
     """
@@ -50,7 +54,9 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
 
 
-# levenshtein
+# hamming distance
+@utils.sim_check_for_none
+@utils.tok_check_for_string_input
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
@@ -78,6 +84,7 @@ def hamming_distance(string1, string2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_string_inputs
 def levenshtein(string1, string2):
     """
 
@@ -95,14 +102,52 @@ def levenshtein(string1, string2):
     return Levenshtein.distance(string1, string2)
 
 
+def sim_ident(s1, s2):
+    return int(s1 == s2)
+
+
+@utils.sim_check_for_none
+@utils.sim_check_for_string_inputs
+def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
+    """
+    Calculates the Needleman-Wunsch similarity score between two strings.
+    Args:
+        string1, string2 (str), gap_cost (int), sim-score(str, str) (function)
+
+    Returns:
+        If string1 and string2 are valid strings then
+            Needleman-Wunsch similarity (int) between two strings is returned.
+
+    Examples:
+        >>> needleman_wunsch('dva', 'deeva')
+        0
+        >>> needleman_wunsch('dva', 'deeve', 0)
+        2
+        >>> needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2 : (int(2 if s1 == s2 else -1)))
+        1
+        >>> needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else -1)))
+        0
+    """
+    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    for i in _range(len(string1) + 1):
+        dist_mat[i, 0] = -(i * gap_cost)
+    for j in _range(len(string2) + 1):
+        dist_mat[0, j] = -(j * gap_cost)
+    for i in _range(1, len(string1) + 1):
+        for j in _range(1, len(string2) + 1):
+            match = dist_mat[i - 1, j - 1] + sim_score(string1[i - 1], string2[j - 1])
+            delete = dist_mat[i - 1, j] - gap_cost
+            insert = dist_mat[i, j - 1] - gap_cost
+            dist_mat[i, j] = max(match, delete, insert)
+    return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
 
 
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
 
-
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
@@ -136,6 +181,7 @@ def jaccard(set1, set2):
 
 
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def overlap(set1, set2):
@@ -159,8 +205,45 @@ def overlap(set1, set2):
     return float(len(set1 & set2))/min(len(set1), len(set2))
 
 
+@utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def tanimoto_coefficient(set1, set2):
+    """
+    This function calculates the Tanimoto coefficient.
+    Calculates the Tanimoto coefficient over two sets. The similarity is defined as the cosine of the angle between the sets expressed as sparse vectors. Source: https://github.com/Simmetrics
+
+
+    Args:
+        set1, set2 (set): Input sets.
+
+
+    Returns:
+        If set1 and set2 are valid sets/lists or single values then
+            Tanimoto coefficient (float) between two sets is returned.
+
+    Examples:
+        >>> tanimoto_coefficient(['data', 'science'], ['data'])
+        0.7071067811865475
+        >>> tanimoto_coefficient({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8})
+        0.5669467095138409
+        >>> tanimoto_coefficient(['data', 'management'], ['data', 'data', 'science'])
+        0.4999999999999999
+        >>> tanimoto_coefficient(['data', 'management'], ['data', 'management'])
+        1.0
+    """
+
+    if not isinstance(set1, set):
+        set1 = set(set1)
+    if not isinstance(set2, set):
+        set2 = set(set2)
+    return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
+
+
 # ---------------------- bag based similarity measures  ----------------------
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def cosine(bag1, bag2):
@@ -190,6 +273,7 @@ def cosine(bag1, bag2):
 
 # hybrid similarity measures
 @utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
 def monge_elkan(bag1, bag2, sim_func=levenshtein):

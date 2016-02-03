@@ -3,6 +3,7 @@ import utils
 
 #@todo: add examples in the comments
 @utils.tok_check_for_none
+@utils.tok_check_for_string_input
 def qgram(input_string, qval=2):
     """
     QGram tokenizer.  A q-gram is defined as all sequences of q characters. Q-grams are also known as n-grams and
@@ -26,6 +27,7 @@ def qgram(input_string, qval=2):
     return qgram_list
 
 @utils.tok_check_for_none
+@utils.tok_check_for_string_input
 def delimiter(input_string, delim_str=' '):
     """
     Delimiter based tokenizer
@@ -42,6 +44,7 @@ def delimiter(input_string, delim_str=' '):
     return input_string.split(delim_str)
 
 @utils.tok_check_for_none
+@utils.tok_check_for_string_input
 def whitespace(input_string):
     """
     White space based tokenizer
