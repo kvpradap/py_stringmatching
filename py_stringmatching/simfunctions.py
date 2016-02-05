@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import division
 from __future__ import unicode_literals
 
@@ -143,6 +144,40 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
             insert = dist_mat[i, j - 1] - gap_cost
             dist_mat[i, j] = max(match, delete, insert)
     return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
+
+
+@utils.sim_check_for_none
+@utils.sim_check_for_string_inputs
+def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
+    """
+    Calculates the Smith-Waterman similarity score between two strings. Cf. https://en.wikipedia.org/wiki/Smith–Waterman_algorithm, https://github.com/Simmetrics
+    Args:
+        string1, string2 (str), gap_cost (int), sim-score(str, str) (function)
+
+    Returns:
+        If string1 and string2 are valid strings then
+            Needleman-Wunsch similarity (int) between two strings is returned.
+
+    Examples:
+        >>> smith_waterman('cat', 'hat')
+        2
+        >>> smith_waterman('dva', 'deeve', 0)
+        2
+        >>> smith_waterman('dva', 'deeve', 1, sim_score=lambda s1, s2 : (int(2 if s1 == s2 else -1)))
+        2
+        >>> smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
+        3
+    """
+    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    max_value = 0
+    for i in _range(1, len(string1) + 1):
+        for j in _range(1, len(string2) + 1):
+            match = dist_mat[i - 1, j - 1] + sim_score(string1[i - 1], string2[j - 1])
+            delete = dist_mat[i - 1, j] - gap_cost
+            insert = dist_mat[i, j - 1] - gap_cost
+            dist_mat[i, j] = max(0, match, delete, insert)
+            max_value = max(max_value, dist_mat[i, j])
+    return max_value
 
 
 # ---------------------- token based similarity measures  ----------------------

@@ -6,6 +6,7 @@ import unittest
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
 from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine
 from py_stringmatching.simfunctions import monge_elkan
+from py_stringmatching.simfunctions import smith_waterman
 
 from py_stringmatching.tokenizers import qgram, whitespace
 
@@ -158,6 +159,31 @@ class NeedlemanWunschTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         needleman_wunsch(None, None)
+
+
+class SmithWatermanTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(smith_waterman('dva', 'deeve'), 1)
+        self.assertEqual(smith_waterman('dva', 'deeve', 0), 2)
+        self.assertEqual(smith_waterman('dva', 'deeve', 1, sim_score=lambda s1, s2: (int(2 if s1 == s2 else -1))), 2)
+        self.assertEqual(
+            smith_waterman('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2: (int(1 if s1 == s2 else -1))),
+            2)
+        self.assertEqual(
+            smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))),
+            3)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        smith_waterman('a', None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        smith_waterman(None, 'b')
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        smith_waterman(None, None)
 
 
 # ---------------------- token based similarity measures  ----------------------
