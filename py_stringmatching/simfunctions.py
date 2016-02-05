@@ -1,6 +1,6 @@
 from __future__ import division
 from __future__ import unicode_literals
-import collections
+
 import Levenshtein
 import math
 
@@ -70,6 +70,9 @@ def hamming_distance(string1, string2):
         If string1 and string2 are of same length the
             Hamming Distance distance (int) between two strings is returned.
 
+    Notes:
+        This function internally uses python-levenshtein package
+
     Examples:
         >>> hamming_distance('', '')
         0
@@ -80,7 +83,7 @@ def hamming_distance(string1, string2):
         >>> hamming_distance('JOHN', 'john')
         4
     """
-    return sum(bool(ord(c1) - ord(c2)) for c1, c2 in zip(string1, string2))
+    return Levenshtein.hamming(string1, string2)
 
 
 @utils.sim_check_for_none
@@ -145,18 +148,28 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
+@utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def cosine(set1, set2):
+    """
+    Cosine similarity between two lists.
 
-#@todo need to work on this
-def cosine_set(set1, set2):
+    Args:
+        bag1, bag2 (list): input lists
+
+    Returns:
+        If bag1 and bag2 are valid lists or single values then
+            cosine similarity (float) between two bags is returned.
+
+    """
 
     if not isinstance(set1, set):
         set1 = set(set1)
     if not isinstance(set2, set):
         set2 = set(set2)
-
-    int_mag = float(len(set1 & set2))
-    return int_mag / math.sqrt(len(set1) * len(set2))
-
+    return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
 
 
 @utils.sim_check_for_none
@@ -197,7 +210,7 @@ def jaccard(set1, set2):
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
-def overlap(set1, set2):
+def overlap_coefficient(set1, set2):
     """
 
     Args:
@@ -207,7 +220,6 @@ def overlap(set1, set2):
     Returns:
         If set1 and set2 are valid sets/lists or single values then
             overlap similarity (float) between two sets is returned.
-\
     """
 
     if not isinstance(set1, set):
@@ -215,76 +227,10 @@ def overlap(set1, set2):
     if not isinstance(set2, set):
         set2 = set(set2)
 
-    return float(len(set1 & set2))/min(len(set1), len(set2))
-
-
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
-#@todo need to revisit this
-def tanimoto_coefficient(set1, set2):
-    """
-    This function calculates the Tanimoto coefficient.
-    Calculates the Tanimoto coefficient over two sets. The similarity is defined as the cosine of the angle between the sets expressed as sparse vectors. Source: https://github.com/Simmetrics
-
-
-    Args:
-        set1, set2 (set): Input sets.
-
-
-    Returns:
-        If set1 and set2 are valid sets/lists or single values then
-            Tanimoto coefficient (float) between two sets is returned.
-
-    Examples:
-        >>> tanimoto_coefficient(['data', 'science'], ['data'])
-        0.7071067811865475
-        >>> tanimoto_coefficient({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8})
-        0.5669467095138409
-        >>> tanimoto_coefficient(['data', 'management'], ['data', 'data', 'science'])
-        0.4999999999999999
-        >>> tanimoto_coefficient(['data', 'management'], ['data', 'management'])
-        1.0
-    """
-
-    if not isinstance(set1, set):
-        set1 = set(set1)
-    if not isinstance(set2, set):
-        set2 = set(set2)
-    return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
+    return float(len(set1 & set2)) / min(len(set1), len(set2))
 
 
 # ---------------------- bag based similarity measures  ----------------------
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
-
-#@todo need to revisit this definition
-def cosine(bag1, bag2):
-    """
-    Cosine similarity between two lists.
-    There are multiple definitions of cosine similarity. This function implements ochihai coefficient.
-
-    Args:
-        bag1, bag2 (list): input lists
-
-    Returns:
-        If bag1 and bag2 are valid lists or single values then
-            cosine similarity (float) between two bags is returned.
-
-    """
-
-    c1 = collections.Counter(bag1)
-    c2 = collections.Counter(bag2)
-
-    c1_mag = sum(c1.values())
-    c2_mag = sum(c2.values())
-
-    int_mag = float(sum((c1 & c2).values()))
-    return int_mag / math.sqrt(c1_mag * c2_mag)
-
 
 
 # hybrid similarity measures
@@ -313,7 +259,5 @@ def monge_elkan(bag1, bag2, sim_func=levenshtein):
         for t2 in bag2:
             max_sim = max(max_sim, sim_func(t1, t2))
         sum_of_maxes += max_sim
-    sim = float(sum_of_maxes)/float(len(bag1))
+    sim = float(sum_of_maxes) / float(len(bag1))
     return sim
-
-

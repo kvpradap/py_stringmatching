@@ -4,11 +4,11 @@ from nose.tools import *
 import unittest
 
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
-from py_stringmatching.simfunctions import overlap, jaccard, tanimoto_coefficient
-from py_stringmatching.simfunctions import cosine
+from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine
 from py_stringmatching.simfunctions import monge_elkan
 
 from py_stringmatching.tokenizers import qgram, whitespace
+
 
 # ---------------------- sequence based similarity measures  ----------------------
 class JaroTestCases(unittest.TestCase):
@@ -51,8 +51,6 @@ class JaroWinklerTestCases(unittest.TestCase):
         jaro_winkler(None, None)
 
 
-
-
 class LevenshteinTestCases(unittest.TestCase):
     def test_valid_input(self):
         # http://oldfashionedsoftware.com/tag/levenshtein-distance/
@@ -83,12 +81,15 @@ class LevenshteinTestCases(unittest.TestCase):
         self.assertEqual(levenshtein('levenshtein', 'frankenstein'), 6)
         self.assertEqual(levenshtein('distance', 'difference'), 5)
         self.assertEqual(levenshtein('java was neat', 'scala is great'), 7)
+
     @raises(TypeError)
     def test_invalid_input1(self):
         levenshtein('a', None)
+
     @raises(TypeError)
     def test_invalid_input2(self):
         levenshtein(None, 'b')
+
     @raises(TypeError)
     def test_invalid_input3(self):
         levenshtein(None, None)
@@ -142,8 +143,9 @@ class NeedlemanWunschTestCases(unittest.TestCase):
         self.assertEqual(needleman_wunsch('dva', 'deeve', 0), 2)
         self.assertEqual(needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2: (int(2 if s1 == s2 else -1))), 1)
         self.assertEqual(
-            needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2: (int(1 if s1 == s2 else -1))),
-            0)
+                needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1,
+                                 sim_score=lambda s1, s2: (int(1 if s1 == s2 else -1))),
+                0)
 
     @raises(TypeError)
     def test_invalid_input1(self):
@@ -161,23 +163,25 @@ class NeedlemanWunschTestCases(unittest.TestCase):
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
-class OverlapTestCases(unittest.TestCase):
+class OverlapCoefficientTestCases(unittest.TestCase):
     def test_valid_input(self):
-        self.assertEqual(overlap([], []), 1.0)
-        self.assertEqual(overlap(['data',  'science'], ['data']), 1.0/min(2.0, 1.0))
-        self.assertEqual(overlap(['data', 'science'], ['science', 'good']), 1.0/min(2.0, 3.0))
-        self.assertEqual(overlap([], ['data']), 0)
-        self.assertEqual(overlap(['data', 'data', 'science'],['data', 'management']), 1.0/min(3.0, 2.0))
+        self.assertEqual(overlap_coefficient([], []), 1.0)
+        self.assertEqual(overlap_coefficient(['data', 'science'], ['data']), 1.0 / min(2.0, 1.0))
+        self.assertEqual(overlap_coefficient(['data', 'science'], ['science', 'good']), 1.0 / min(2.0, 3.0))
+        self.assertEqual(overlap_coefficient([], ['data']), 0)
+        self.assertEqual(overlap_coefficient(['data', 'data', 'science'], ['data', 'management']), 1.0 / min(3.0, 2.0))
 
     @raises(TypeError)
     def test_invalid_input1(self):
-        overlap(['a'], None)
+        overlap_coefficient(['a'], None)
+
     @raises(TypeError)
     def test_invalid_input2(self):
-        overlap(None, ['b'])
+        overlap_coefficient(None, ['b'])
+
     @raises(TypeError)
     def test_invalid_input3(self):
-        overlap(None, None)
+        overlap_coefficient(None, None)
 
 
 class JaccardTestCases(unittest.TestCase):
@@ -208,58 +212,58 @@ class JaccardTestCases(unittest.TestCase):
         jaccard(None, None)
 
 
-class TanimotoCoefficientTestCases(unittest.TestCase):
+class CosineTestCases(unittest.TestCase):
     def test_valid_input(self):
-        self.assertEqual(tanimoto_coefficient(['data', 'science'], ['data']), 1.0 / (math.sqrt(2) * math.sqrt(1)))
-        self.assertEqual(tanimoto_coefficient(['data', 'science'], ['science', 'good']),
+        self.assertEqual(cosine(['data', 'science'], ['data']), 1.0 / (math.sqrt(2) * math.sqrt(1)))
+        self.assertEqual(cosine(['data', 'science'], ['science', 'good']),
                          1.0 / (math.sqrt(2) * math.sqrt(2)))
-        self.assertEqual(tanimoto_coefficient([], ['data']), 0.0)
-        self.assertEqual(tanimoto_coefficient(['data', 'data', 'science'], ['data', 'management']),
+        self.assertEqual(cosine([], ['data']), 0.0)
+        self.assertEqual(cosine(['data', 'data', 'science'], ['data', 'management']),
                          1.0 / (math.sqrt(2) * math.sqrt(2)))
-        self.assertEqual(tanimoto_coefficient(['data', 'management'], ['data', 'data', 'science']),
+        self.assertEqual(cosine(['data', 'management'], ['data', 'data', 'science']),
                          1.0 / (math.sqrt(2) * math.sqrt(2)))
-        self.assertEqual(tanimoto_coefficient([], []), 1.0)
-        self.assertEqual(tanimoto_coefficient(set([]), set([])), 1.0)
-        self.assertEqual(tanimoto_coefficient({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}),
+        self.assertEqual(cosine([], []), 1.0)
+        self.assertEqual(cosine(set([]), set([])), 1.0)
+        self.assertEqual(cosine({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}),
                          3.0 / (math.sqrt(4) * math.sqrt(7)))
 
     @raises(TypeError)
     def test_invalid_input1(self):
-        tanimoto_coefficient(1, 1)
-
-    @raises(TypeError)
-    def test_invalid_input1(self):
-        tanimoto_coefficient(['a'], None)
-
-    @raises(TypeError)
-    def test_invalid_input2(self):
-        tanimoto_coefficient(None, ['b'])
-
-    @raises(TypeError)
-    def test_invalid_input3(self):
-        tanimoto_coefficient(None, None)
-
-
-# ---------------------- bag based similarity measures  ----------------------
-class CosineTestCases(unittest.TestCase):
-    def test_valid_input(self):
-        NONQ_FROM = 'The quick brown fox jumped over the lazy dog.'
-        NONQ_TO = 'That brown dog jumped over the fox.'
-        self.assertEqual(cosine([], []), 1) # check-- done. both simmetrics, abydos return 1.
-        self.assertEqual(cosine(['the', 'quick'], []), 0)
-        self.assertEqual(cosine([], ['the', 'quick']), 0)
-        self.assertAlmostEqual(cosine(whitespace(NONQ_TO), whitespace(NONQ_FROM)),
-                               4/math.sqrt(9*7))
+        cosine(1, 1)
 
     @raises(TypeError)
     def test_invalid_input1(self):
         cosine(['a'], None)
+
     @raises(TypeError)
     def test_invalid_input2(self):
         cosine(None, ['b'])
+
     @raises(TypeError)
     def test_invalid_input3(self):
         cosine(None, None)
+
+
+# ---------------------- bag based similarity measures  ----------------------
+# class CosineTestCases(unittest.TestCase):
+#     def test_valid_input(self):
+#         NONQ_FROM = 'The quick brown fox jumped over the lazy dog.'
+#         NONQ_TO = 'That brown dog jumped over the fox.'
+#         self.assertEqual(cosine([], []), 1) # check-- done. both simmetrics, abydos return 1.
+#         self.assertEqual(cosine(['the', 'quick'], []), 0)
+#         self.assertEqual(cosine([], ['the', 'quick']), 0)
+#         self.assertAlmostEqual(cosine(whitespace(NONQ_TO), whitespace(NONQ_FROM)),
+#                                4/math.sqrt(9*7))
+#
+#     @raises(TypeError)
+#     def test_invalid_input1(self):
+#         cosine(['a'], None)
+#     @raises(TypeError)
+#     def test_invalid_input2(self):
+#         cosine(None, ['b'])
+#     @raises(TypeError)
+#     def test_invalid_input3(self):
+#         cosine(None, None)
 
 
 
@@ -275,4 +279,3 @@ class MongeElkanTestCases(unittest.TestCase):
         self.assertEqual(monge_elkan(['Niall'], ['Njall']), 1.0)
         self.assertEqual(monge_elkan(['Niall'], ['Niel']), 2.0)
         self.assertEqual(monge_elkan(['Niall'], ['Nigel']), 2.0)
-
