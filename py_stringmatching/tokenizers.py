@@ -1,5 +1,5 @@
 from .compat import _range
-import utils
+from py_stringmatching import utils
 
 #@todo: add examples in the comments
 @utils.tok_check_for_none
