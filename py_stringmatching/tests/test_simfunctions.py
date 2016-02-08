@@ -135,8 +135,8 @@ class HammingDistanceTestCases(unittest.TestCase):
         self.assertEqual(hamming_distance(u'', u''), 0)
         str_1 = u'foo'.encode(encoding='UTF-8', errors='strict')
         str_2 = u'bar'.encode(encoding='UTF-8', errors='strict')
-        self.assertEqual(hamming_distance(str_1, str_2), 3)
-        self.assertEqual(hamming_distance(str_1, str_1), 0)
+        self.assertEqual(hamming_distance(str_1, str_2), 3) # check with Ali - python 3 returns type error
+        self.assertEqual(hamming_distance(str_1, str_1), 0) # check with Ali - python 3 returns type error
 
     @raises(TypeError)
     def test_invalid_input1(self):
@@ -244,7 +244,7 @@ class JaccardTestCases(unittest.TestCase):
         self.assertEqual(jaccard(['data', 'management'], ['data', 'data', 'science']), 1.0 / 3.0)
         self.assertEqual(jaccard([], []), 1.0)
         self.assertEqual(jaccard(set([]), set([])), 1.0)
-        # self.assertEqual(jaccard({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}), 3.0 / 8.0)
+        self.assertEqual(jaccard({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}), 3.0 / 8.0)
 
     @raises(TypeError)
     def test_invalid_input1(self):
@@ -275,8 +275,8 @@ class CosineTestCases(unittest.TestCase):
                          1.0 / (math.sqrt(2) * math.sqrt(2)))
         self.assertEqual(cosine([], []), 1.0)
         self.assertEqual(cosine(set([]), set([])), 1.0)
-        # self.assertEqual(cosine({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}),
-        #                  3.0 / (math.sqrt(4) * math.sqrt(7)))
+        self.assertEqual(cosine({1, 1, 2, 3, 4}, {2, 3, 4, 5, 6, 7, 7, 8}),
+                         3.0 / (math.sqrt(4) * math.sqrt(7)))
 
     @raises(TypeError)
     def test_invalid_input1(self):

@@ -42,18 +42,18 @@ def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_
     X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
 
-    for i in xrange(1, len(string1) + 1):
+    for i in _range(1, len(string1) + 1):
         M[i][0] = -float("inf")
         X[i][0] = gap_start + (i - 1) * gap_continuation
         Y[i][0] = -float("inf")
 
-    for j in xrange(1, len(string2) + 1):
+    for j in _range(1, len(string2) + 1):
         M[0][j] = -float("inf")
         X[0][j] = -float("inf")
         Y[0][j] = gap_start + (j - 1) * gap_continuation
 
-    for i in xrange(1, len(string1) + 1):
-        for j in xrange(1, len(string2) + 1):
+    for i in _range(1, len(string1) + 1):
+        for j in _range(1, len(string2) + 1):
             M[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(M[i - 1][j - 1], X[i - 1][j - 1], Y[i - 1][j - 1])
             X[i][j] = max(gap_start + M[i - 1][j], gap_continuation + X[i - 1][j])
             Y[i][j] = max(gap_start + M[i][j - 1], gap_continuation + Y[i][j - 1])
@@ -130,8 +130,8 @@ def hamming_distance(string1, string2):
         >>> hamming_distance('JOHN', 'john')
         4
     """
-    return Levenshtein.hamming(string1, string2)
-
+    # return Levenshtein.hamming(string1, string2)
+    return sum(bool(ord(c1) - ord(c2)) for c1, c2 in zip(string1, string2))
 
 @utils.sim_check_for_none
 @utils.sim_check_for_string_inputs
