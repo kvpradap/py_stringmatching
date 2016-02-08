@@ -18,8 +18,11 @@ class AffineTestCases(unittest.TestCase):
     def test_valid_input(self):
         self.assertAlmostEqual(affine('dva', 'deeva'), 1.5)
         self.assertAlmostEqual(affine('dva', 'deeve', gap_start=-2, gap_continuation=-0.5), -0.5)
-        self.assertAlmostEqual(affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0))), 4.4)
-        self.assertAlmostEqual(affine(' ', ' ', gap_continuation=-0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0))), 1)
+        self.assertAlmostEqual(
+            affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))),
+            4.4)
+        self.assertAlmostEqual(
+            affine(' ', ' ', gap_continuation=-0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))), 1)
 
     @raises(TypeError)
     def test_invalid_input1(self):

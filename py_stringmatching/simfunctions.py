@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import collections
 import Levenshtein
 import math
-from decimal import Decimal
 
 import utils
 import numpy as np
