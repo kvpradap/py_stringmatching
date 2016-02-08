@@ -231,13 +231,13 @@ def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
 @utils.sim_check_for_empty
 def cosine(set1, set2):
     """
-    Cosine similarity between two lists.
+    Cosine similarity between two sets.
 
     Args:
-        bag1, bag2 (list): input lists
+        set1, set2 (list): input sets
 
     Returns:
-        If bag1 and bag2 are valid lists or single values then
+        If set1 and set2 are valid sets then
             cosine similarity (float) between two bags is returned.
 
     """
