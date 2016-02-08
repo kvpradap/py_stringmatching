@@ -10,8 +10,55 @@ import numpy as np
 from .compat import _range
 
 
+def sim_ident(s1, s2):
+    return int(s1 == s2)
+
 # @todo: add examples in the comments
 # ---------------------- sequence based similarity measures  ----------------------
+
+
+@utils.sim_check_for_none
+@utils.tok_check_for_string_input
+@utils.sim_check_for_empty
+def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident):
+    """
+    Calculates the Affine gap measure similarity score between two strings. This is calculated according to the description provided in the Data Integration book.
+    Args:
+        string1 (str), string2 (str), gap_start (float, default=-1.0), gap_continuation (float, default=-0.5), sim-score(str, str) (function, default=identity)
+
+    Returns:
+        If string1 and string2 are valid strings then
+            Affine gap measure (float) between two strings is returned.
+
+    Examples:
+        >>> affine('dva', 'deeva')
+        1.5
+        >>> affine('dva', 'deeve', gap_start=-2, gap_continuation=-0.5)
+        -0.5
+        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
+        4.4
+    """
+    M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+
+    for i in xrange(1, len(string1) + 1):
+        M[i][0] = -float("inf")
+        X[i][0] = gap_start + (i - 1) * gap_continuation
+        Y[i][0] = -float("inf")
+
+    for j in xrange(1, len(string2) + 1):
+        M[0][j] = -float("inf")
+        X[0][j] = -float("inf")
+        Y[0][j] = gap_start + (j - 1) * gap_continuation
+
+    for i in xrange(1, len(string1) + 1):
+        for j in xrange(1, len(string2) + 1):
+            M[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(M[i - 1][j - 1], X[i - 1][j - 1], Y[i - 1][j - 1])
+            X[i][j] = max(gap_start + M[i - 1][j], gap_continuation + X[i - 1][j])
+            Y[i][j] = max(gap_start + M[i][j - 1], gap_continuation + Y[i][j - 1])
+    return max(M[len(string1)][len(string2)], X[len(string1)][len(string2)], Y[len(string1)][len(string2)])
+
 
 # jaro
 @utils.sim_check_for_none
@@ -55,7 +102,6 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
 
 
-# hamming distance
 @utils.sim_check_for_none
 @utils.tok_check_for_string_input
 @utils.sim_check_for_same_len
@@ -104,10 +150,6 @@ def levenshtein(string1, string2):
 
     """
     return Levenshtein.distance(string1, string2)
-
-
-def sim_ident(s1, s2):
-    return int(s1 == s2)
 
 
 @utils.sim_check_for_none
