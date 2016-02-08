@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import Levenshtein
 import math
 
-import utils
+from py_stringmatching import utils
 import numpy as np
 from .compat import _range
 
