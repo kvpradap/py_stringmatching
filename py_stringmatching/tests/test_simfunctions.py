@@ -321,7 +321,7 @@ class CosineTestCases(unittest.TestCase):
 # ---------------------- hybrid similarity measure  ----------------------
 class MongeElkanTestCases(unittest.TestCase):
     def test_valid_input(self):
-        self.assertEqual(monge_elkan([''], ['']), 1.0)
+        self.assertEqual(monge_elkan([''], ['']), 1.0) # need to check this
 
         self.assertEqual(monge_elkan([''], ['a']), 1.0)
         self.assertEqual(monge_elkan(['a'], ['a']), 1)
