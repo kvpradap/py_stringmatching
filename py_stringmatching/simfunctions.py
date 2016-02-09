@@ -22,13 +22,19 @@ def sim_ident(s1, s2):
 @utils.sim_check_for_empty
 def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident):
     """
-    Calculates the Affine gap measure similarity score between two strings. This is calculated according to the description provided in the Data Integration book.
+    Calculates the Affine gap measure similarity score between two strings.
+    This is calculated according to the description provided in the Data Integration book.
+
     Args:
-        string1 (str), string2 (str), gap_start (float, default=-1.0), gap_continuation (float, default=-0.5), sim-score(str, str) (function, default=identity)
+        string1, string2 (str) : Input strings
+        gap_start (float): Cost for the gap at the start (default value is -1)
+        gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
+        sim_score (function) : Function computing similarity score between two chars (rep as strings)
+        (default value is identity)
 
     Returns:
         If string1 and string2 are valid strings then
-            Affine gap measure (float) between two strings is returned.
+        Affine gap measure (float) between two strings is returned.
 
     Examples:
         >>> affine('dva', 'deeva')
@@ -107,15 +113,15 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
-    This function calculates the hamming distance between the two equal length strings. It is the number of positions at
-    which the corresponding symbols are different.
+    This function calculates the hamming distance between the two equal length strings.
+    It is the number of positions at which the corresponding symbols are different.
 
     Args:
         string1, string2 (str): Input strings
 
     Returns:
         If string1 and string2 are of same length the
-            Hamming Distance distance (int) between two strings is returned.
+        Hamming Distance distance (int) between two strings is returned.
 
     Notes:
         This function internally uses python-levenshtein package
@@ -157,12 +163,16 @@ def levenshtein(string1, string2):
 def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
     """
     Calculates the Needleman-Wunsch similarity score between two strings.
-    Args:
-        string1, string2 (str), gap_cost (int), sim-score(str, str) (function)
 
+    Args:
+        string1, string2 (str) : Input strings
+        gap_cost (int) : Cost of gap (default value is 1)
+        sim_score (function) : Similarity function for two chars (rep as strings)
+        (default value is identity, i.e for the same character the score is 1, else
+        the score is 0)
     Returns:
         If string1 and string2 are valid strings then
-            Needleman-Wunsch similarity (int) between two strings is returned.
+        Needleman-Wunsch similarity (int) between two strings is returned.
 
     Examples:
         >>> needleman_wunsch('dva', 'deeva')
@@ -193,12 +203,17 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
     """
     Calculates the Smith-Waterman similarity score between two strings. Cf. https://en.wikipedia.org/wiki/Smith–Waterman_algorithm, https://github.com/Simmetrics
+
     Args:
-        string1, string2 (str), gap_cost (int), sim-score(str, str) (function)
+        string1, string2 (str) : Input strings
+        gap_cost (int) : Cost of gap (default value is 1)
+        sim_score (function) : Similarity function for two chars (rep as strings)
+        (default value is identity, i.e for the same character the score is 1, else
+        the score is 0)
 
     Returns:
         If string1 and string2 are valid strings then
-            Needleman-Wunsch similarity (int) between two strings is returned.
+        Needleman-Wunsch similarity (int) between two strings is returned.
 
     Examples:
         >>> smith_waterman('cat', 'hat')
