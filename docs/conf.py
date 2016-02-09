@@ -34,7 +34,13 @@ sys.path.append('/Users/pradap/Documents/Research/Python-Package/py_stringmatchi
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode',
+]
 
 
 # Napoleon settings
@@ -103,7 +109,7 @@ exclude_patterns = ['_build']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+add_module_names = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
@@ -134,7 +140,7 @@ html_theme = 'sphinx_rtd_theme'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+#html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
