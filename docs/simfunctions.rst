@@ -4,7 +4,6 @@ Similarity Functions
 .. automodule:: py_stringmatching.simfunctions
 
 
-    .. autofunction:: affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident)
     .. autofunction:: jaro(string1, string2)
     .. autofunction:: jaro_winkler(string1, string2, prefix_weight=0.1)
     .. autofunction:: hamming_distance(string1, string2)
