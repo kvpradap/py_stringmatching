@@ -2,6 +2,16 @@ Similarity Functions
 ====================
 
 .. automodule:: py_stringmatching.simfunctions
-    :members:
-    :undoc-members:
-    :show-inheritance:
+
+
+    .. autofunction:: affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident)
+    .. autofunction:: jaro(string1, string2)
+    .. autofunction:: jaro_winkler(string1, string2, prefix_weight=0.1)
+    .. autofunction:: hamming_distance(string1, string2)
+    .. autofunction:: levenshtein(string1, string2)
+    .. autofunction:: needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident)
+    .. autofunction:: smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident)
+    .. autofunction:: cosine(set1, set2)
+    .. autofunction:: jaccard(set1, set2)
+    .. autofunction:: overlap_coefficient(set1, set2)
+    .. autofunction:: monge_elkan(bag1, bag2, sim_func=levenshtein)

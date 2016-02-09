@@ -1,3 +1,4 @@
+from decorator import decorator
 import functools
 import numpy as np
 import six
@@ -7,6 +8,7 @@ This module defines a list of decorator functions to check input strings/list. T
 from the similarity functions is the implementation of checking functions can change later, depending on
 our decision to handle missing values.
 """
+
 
 def sim_check_for_list_or_set_inputs(func):
     @functools.wraps(func)

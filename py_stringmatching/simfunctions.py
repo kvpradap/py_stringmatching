@@ -26,9 +26,12 @@ def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_
     This is calculated according to the description provided in the Data Integration book.
 
     Args:
-        string1, string2 (str) : Input strings
+        string1,string2 (str) : Input strings
+
         gap_start (float): Cost for the gap at the start (default value is -1)
+
         gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
+
         sim_score (function) : Function computing similarity score between two chars (rep as strings)
         (default value is identity)
 
@@ -95,6 +98,7 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 
     Args:
         string1, string2 (str): Input strings
+
         prefix_weight: Weight that should be given to the prefix (defaults to 0.1)
 
     Returns:
@@ -166,10 +170,13 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 
     Args:
         string1, string2 (str) : Input strings
+
         gap_cost (int) : Cost of gap (default value is 1)
+
         sim_score (function) : Similarity function for two chars (rep as strings)
         (default value is identity, i.e for the same character the score is 1, else
         the score is 0)
+
     Returns:
         If string1 and string2 are valid strings then
         Needleman-Wunsch similarity (int) between two strings is returned.
@@ -206,7 +213,9 @@ def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
 
     Args:
         string1, string2 (str) : Input strings
+
         gap_cost (int) : Cost of gap (default value is 1)
+
         sim_score (function) : Similarity function for two chars (rep as strings)
         (default value is identity, i.e for the same character the score is 1, else
         the score is 0)
@@ -338,6 +347,7 @@ def monge_elkan(bag1, bag2, sim_func=levenshtein):
 
     Args:
         bag1, bag2 (list): Input lists
+
         sim_func: Similarity function to be used for each pair of tokens. This is expected to be a sequence-based
         similarity measure
 

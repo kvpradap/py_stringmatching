@@ -11,6 +11,7 @@ def qgram(input_string, qval=2):
 
     Args:
         input_string (str): A string to extract q-grams from
+
         qval (int): The q-gram length (defaults to 2)
 
     Returns:
@@ -34,6 +35,7 @@ def delimiter(input_string, delim_str=' '):
 
     Args:
         input_string (str): A string to extract tokens from.
+
         delim_str (str): Delimiter string
 
 
