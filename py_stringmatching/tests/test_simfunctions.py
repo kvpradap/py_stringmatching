@@ -1,15 +1,15 @@
 from __future__ import unicode_literals
+
 import math
+
 from nose.tools import *
-import unittest
-
-from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
+# sequence based similarity measures
+from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch, \
+    smith_waterman, affine
+# token based similarity measures
 from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine
+# hybrid similarity measures
 from py_stringmatching.simfunctions import monge_elkan
-from py_stringmatching.simfunctions import affine
-from py_stringmatching.simfunctions import smith_waterman
-
-from py_stringmatching.tokenizers import qgram, whitespace
 
 
 # ---------------------- sequence based similarity measures  ----------------------

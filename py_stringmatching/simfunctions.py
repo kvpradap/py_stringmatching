@@ -21,22 +21,28 @@ def sim_ident(s1, s2):
 @utils.sim_check_for_empty
 def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_ident):
     """
-    Calculates the Affine gap measure similarity score between two strings.
-    This is calculated according to the description provided in the Data Integration book.
+    Computes the Affine gap score between two strings.
+
+    The Affine gap measure is an extension of the Needleman-Wunsch measure that handles the longer gaps more
+    gracefully.
+
+    For more information refer to string matching chapter in the DI book.
 
     Args:
         string1,string2 (str) : Input strings
 
-        gap_start (float): Cost for the gap at the start (default value is 1)
+        gap_start (float): Cost for the gap at the start (defaults to 1)
 
-        gap_continuation (float) : Cost for the gap continuation (default value is 0.5)
+        gap_continuation (float) : Cost for the gap continuation (defaults to 0.5)
 
-        sim_score (function) : Function computing similarity score between two chars (rep as strings)
-        (default value is identity)
+        sim_score (function) : Function computing similarity score between two chars, represented as strings
+            (defaults to identity).
 
     Returns:
-        If string1 and string2 are valid strings then
-        Affine gap measure (float) between two strings is returned.
+        Affine gap score (float)
+
+    Raises:
+        TypeError : If the inputs are not strings
 
     Examples:
         >>> affine('dva', 'deeva')
