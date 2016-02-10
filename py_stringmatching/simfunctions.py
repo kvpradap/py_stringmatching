@@ -27,9 +27,9 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
     Args:
         string1,string2 (str) : Input strings
 
-        gap_start (float): Cost for the gap at the start (default value is -1)
+        gap_start (float): Cost for the gap at the start (default value is 1)
 
-        gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
+        gap_continuation (float) : Cost for the gap continuation (default value is 0.5)
 
         sim_score (function) : Function computing similarity score between two chars (rep as strings)
         (default value is identity)
