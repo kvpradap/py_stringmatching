@@ -168,13 +168,13 @@ class HammingDistanceTestCases(unittest.TestCase):
 
 class NeedlemanWunschTestCases(unittest.TestCase):
     def test_valid_input(self):
-        self.assertEqual(needleman_wunsch('dva', 'deeve'), 0)
-        self.assertEqual(needleman_wunsch('dva', 'deeve', 0), 2)
-        self.assertEqual(needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2: (int(2 if s1 == s2 else -1))), 1)
+        self.assertEqual(needleman_wunsch('dva', 'deeva'), 1.0)
+        self.assertEqual(needleman_wunsch('dva', 'deeve', 0.0), 2.0)
+        self.assertEqual(needleman_wunsch('dva', 'deeve', 1.0, sim_score=lambda s1, s2: (int(2 if s1 == s2 else -1))), 1.0)
         self.assertEqual(
-                needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1,
+                needleman_wunsch('GCATGCUA', 'GATTACA', gap_cost=0.5,
                                  sim_score=lambda s1, s2: (int(1 if s1 == s2 else -1))),
-                0)
+                2.5)
 
     @raises(TypeError)
     def test_invalid_input1(self):
