@@ -14,6 +14,62 @@ def sim_ident(s1, s2):
     return int(s1 == s2)
 
 # ---------------------- sequence based similarity measures  ----------------------
+
+
+@utils.sim_check_for_none
+@utils.tok_check_for_string_input
+@utils.sim_check_for_empty
+def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_ident):
+    """
+    Calculates the Affine gap measure similarity score between two strings.
+    This is calculated according to the description provided in the Data Integration book.
+
+    Args:
+        string1,string2 (str) : Input strings
+
+        gap_start (float): Cost for the gap at the start (default value is -1)
+
+        gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
+
+        sim_score (function) : Function computing similarity score between two chars (rep as strings)
+        (default value is identity)
+
+    Returns:
+        If string1 and string2 are valid strings then
+        Affine gap measure (float) between two strings is returned.
+
+    Examples:
+        >>> affine('dva', 'deeva')
+        1.5
+        >>> affine('dva', 'deeve', gap_start=2, gap_continuation=0.5)
+        -0.5
+        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
+        4.4
+    """
+    gap_start = -gap_start
+    gap_continuation = -gap_continuation
+    M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+
+    for i in _range(1, len(string1) + 1):
+        M[i][0] = -float("inf")
+        X[i][0] = gap_start + (i - 1) * gap_continuation
+        Y[i][0] = -float("inf")
+
+    for j in _range(1, len(string2) + 1):
+        M[0][j] = -float("inf")
+        X[0][j] = -float("inf")
+        Y[0][j] = gap_start + (j - 1) * gap_continuation
+
+    for i in _range(1, len(string1) + 1):
+        for j in _range(1, len(string2) + 1):
+            M[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(M[i - 1][j - 1], X[i - 1][j - 1], Y[i - 1][j - 1])
+            X[i][j] = max(gap_start + M[i - 1][j], gap_continuation + X[i - 1][j])
+            Y[i][j] = max(gap_start + M[i][j - 1], gap_continuation + Y[i][j - 1])
+    return max(M[len(string1)][len(string2)], X[len(string1)][len(string2)], Y[len(string1)][len(string2)])
+
+
 # jaro
 @utils.sim_check_for_none
 @utils.tok_check_for_string_input
@@ -447,54 +503,3 @@ def monge_elkan(bag1, bag2, sim_func=levenshtein):
     sim = float(sum_of_maxes) / float(len(bag1))
     return sim
 
-#---- to be deleted --- #
-# @utils.sim_check_for_none
-# @utils.tok_check_for_string_input
-# @utils.sim_check_for_empty
-# def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident):
-#     """
-#     Calculates the Affine gap measure similarity score between two strings.
-#     This is calculated according to the description provided in the Data Integration book.
-#
-#     Args:
-#         string1,string2 (str) : Input strings
-#
-#         gap_start (float): Cost for the gap at the start (default value is -1)
-#
-#         gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
-#
-#         sim_score (function) : Function computing similarity score between two chars (rep as strings)
-#         (default value is identity)
-#
-#     Returns:
-#         If string1 and string2 are valid strings then
-#         Affine gap measure (float) between two strings is returned.
-#
-#     Examples:
-#         >>> affine('dva', 'deeva')
-#         1.5
-#         >>> affine('dva', 'deeve', gap_start=-2, gap_continuation=-0.5)
-#         -0.5
-#         >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
-#         4.4
-#     """
-#     M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-#     X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-#     Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-#
-#     for i in _range(1, len(string1) + 1):
-#         M[i][0] = -float("inf")
-#         X[i][0] = gap_start + (i - 1) * gap_continuation
-#         Y[i][0] = -float("inf")
-#
-#     for j in _range(1, len(string2) + 1):
-#         M[0][j] = -float("inf")
-#         X[0][j] = -float("inf")
-#         Y[0][j] = gap_start + (j - 1) * gap_continuation
-#
-#     for i in _range(1, len(string1) + 1):
-#         for j in _range(1, len(string2) + 1):
-#             M[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(M[i - 1][j - 1], X[i - 1][j - 1], Y[i - 1][j - 1])
-#             X[i][j] = max(gap_start + M[i - 1][j], gap_continuation + X[i - 1][j])
-#             Y[i][j] = max(gap_start + M[i][j - 1], gap_continuation + Y[i][j - 1])
-#     return max(M[len(string1)][len(string2)], X[len(string1)][len(string2)], Y[len(string1)][len(string2)])
