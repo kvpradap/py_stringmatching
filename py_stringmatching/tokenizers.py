@@ -6,17 +6,30 @@ from py_stringmatching import utils
 @utils.tok_check_for_string_input
 def qgram(input_string, qval=2):
     """
-    QGram tokenizer.  A q-gram is defined as all sequences of q characters. Q-grams are also known as n-grams and
+    Tokenizes input string into q-grams.
+
+    A q-gram is defined as all sequences of q characters. Q-grams are also known as n-grams and
     k-grams.
 
     Args:
-        input_string (str): A string to extract q-grams from
+        input_string (str): Input string
 
-        qval (int): The q-gram length (defaults to 2)
+        qval (int): Q-gram length (defaults to 2)
 
     Returns:
-        If the input string is not None and qval is less than length of the input  then,
-        a list of qgrams is returned.
+        Token list (list)
+
+    Raises:
+        TypeError : If the input is not string
+
+    Examples:
+        >>> qgram('database')
+        ['da','at','ta','ab','ba','as','se']
+        >>> qgram('a')
+        []
+        >>> qgram('database', 3)
+        ['dat', 'ata', 'tab', 'aba', 'bas', 'ase']
+
 
     """
     qgram_list = []
@@ -31,16 +44,27 @@ def qgram(input_string, qval=2):
 @utils.tok_check_for_string_input
 def delimiter(input_string, delim_str=' '):
     """
-    Delimiter based tokenizer
+    Tokenizes input string based on the given delimiter.
 
     Args:
-        input_string (str): A string to extract tokens from.
+        input_string (str): Input string
 
         delim_str (str): Delimiter string
 
 
     Returns:
-        If the input string is not None and delim_str is not None, then a list of tokens are returned.
+        Token list (list)
+
+    Raises:
+        TypeError : If the input is not string
+
+    Examples:
+        >>> delimiter('data science')
+        ['data', 'science']
+        >>> delimiter('data$#$science', '$#$')
+        ['data', 'science']
+        >>> delimiter('data science', ',')
+        ['data science']
 
     """
     return input_string.split(delim_str)
@@ -49,13 +73,24 @@ def delimiter(input_string, delim_str=' '):
 @utils.tok_check_for_string_input
 def whitespace(input_string):
     """
-    White space based tokenizer
+    Tokenizes input string based on white space.
 
     Args:
-        input_string (str): A string to extract tokens from.
+        input_string (str): Input string
 
     Returns:
-        If the input string is not None, then a list of tokens are returned.
+        Token list (list)
+
+    Raises:
+        TypeError : If the input is not string
+
+    Examples:
+        >>> whitespace('data science')
+        ['data', 'science']
+        >>> whitespace('data        science')
+        ['data', 'science']
+        >>> whitespace('data\tscience')
+        ['data', 'science']
 
     """
     return input_string.split()

@@ -13,40 +13,47 @@ from .compat import _range
 def sim_ident(s1, s2):
     return int(s1 == s2)
 
-# @todo: add examples in the comments
 # ---------------------- sequence based similarity measures  ----------------------
 
 
 @utils.sim_check_for_none
 @utils.tok_check_for_string_input
 @utils.sim_check_for_empty
-def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_ident):
+def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_ident):
     """
-    Calculates the Affine gap measure similarity score between two strings.
-    This is calculated according to the description provided in the Data Integration book.
+    Computes the Affine gap score between two strings.
+
+    The Affine gap measure is an extension of the Needleman-Wunsch measure that handles the longer gaps more
+    gracefully.
+
+    For more information refer to string matching chapter in the DI book.
 
     Args:
         string1,string2 (str) : Input strings
 
-        gap_start (float): Cost for the gap at the start (default value is -1)
+        gap_start (float): Cost for the gap at the start (defaults to 1)
 
-        gap_continuation (float) : Cost for the gap continuation (default value is -0.5)
+        gap_continuation (float) : Cost for the gap continuation (defaults to 0.5)
 
-        sim_score (function) : Function computing similarity score between two chars (rep as strings)
-        (default value is identity)
+        sim_score (function) : Function computing similarity score between two chars, represented as strings
+            (defaults to identity).
 
     Returns:
-        If string1 and string2 are valid strings then
-        Affine gap measure (float) between two strings is returned.
+        Affine gap score (float)
+
+    Raises:
+        TypeError : If the inputs are not strings
 
     Examples:
         >>> affine('dva', 'deeva')
         1.5
-        >>> affine('dva', 'deeve', gap_start=-2, gap_continuation=-0.5)
+        >>> affine('dva', 'deeve', gap_start=2, gap_continuation=0.5)
         -0.5
-        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
+        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
         4.4
     """
+    gap_start = -gap_start
+    gap_continuation = -gap_continuation
     M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
@@ -75,17 +82,35 @@ def affine(string1, string2, gap_start=-1, gap_continuation=-0.5, sim_score=sim_
 @utils.sim_check_for_empty
 def jaro(string1, string2):
     """
+    Computes the Jaro measure between two strings.
+
+    The Jaro measure is a type of edit distance, This was developed mainly to compare short strings,
+    such as first and last names.
+
 
     Args:
-        string1, string2 (str): Input strings
+        string1,string2 (str): Input strings
 
     Returns:
-        If string1 and string2 are valid strings then
-        jaro similarity (float) between two strings is returned.
+        Jaro measure (float)
 
-    Notes:
-        This function internally uses python-levenshtein package
+
+    Raises:
+        TypeError : If the inputs are not strings
+
+
+    Examples:
+        >>> jaro('MARTHA', 'MARHTA')
+        0.9444444444444445
+        >>> jaro('DWAYNE', 'DUANE')
+        0.8222222222222223
+        >>> jaro('DIXON', 'DICKSONX')
+        0.7666666666666666
+
+    Note:
+        This implementation internally uses python-levenshtein package to compute the Jaro measure.
     """
+
     return Levenshtein.jaro(string1, string2)
 
 
@@ -95,18 +120,34 @@ def jaro(string1, string2):
 @utils.sim_check_for_empty
 def jaro_winkler(string1, string2, prefix_weight=0.1):
     """
+    Computes the Jaro-Winkler measure between two strings.
+
+    The Jaro-Winkler measure is designed to capture cases where two strings have a low Jaro score, but share a prefix
+    and thus are likely to match.
+
 
     Args:
-        string1, string2 (str): Input strings
+        string1,string2 (str): Input strings
 
-        prefix_weight: Weight that should be given to the prefix (defaults to 0.1)
+        prefix_weight (float): Weight to give the prefix (defaults to 0.1)
 
     Returns:
-        If string1 and string2 are valid strings then
-            jaro-winkler similarity (float) between two strings is returned.
+        Jaro-Winkler measure (float)
 
-    Notes:
-        This function internally uses python-levenshtein package
+    Raises:
+        TypeError : If the inputs are not strings
+
+
+    Examples:
+        >>> jaro_winkler('MARTHA', 'MARHTA')
+        0.9611111111111111
+        >>> jaro_winkler('DWAYNE', 'DUANE')
+        0.84
+        >>> jaro_winkler('DIXON', 'DICKSONX')
+        0.8133333333333332
+
+    Note:
+        This implementation internally uses python-levenshtein package to compute the Jaro-Winkler measure.
 
     """
     return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
@@ -117,18 +158,23 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 @utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
-    This function calculates the hamming distance between the two equal length strings.
-    It is the number of positions at which the corresponding symbols are different.
+    Computes the Hamming distance between two strings.
+
+    The Hamming distance between two strings of equal length is the number of positions at which the corresponding
+    symbols are different. In another way, it measures the minimum number of substitutions required to change
+    one string into the other, or the minimum number of errors that could have transformed one string into the other.
+
 
     Args:
-        string1, string2 (str): Input strings
+        string1,string2 (str): Input strings
 
     Returns:
-        If string1 and string2 are of same length the
-        Hamming Distance distance (int) between two strings is returned.
+        Hamming distance (int)
 
-    Notes:
-        This function internally uses python-levenshtein package
+    Raises:
+        TypeError : If the inputs are not strings
+        ValueError : If the input strings are not of same length
+
 
     Examples:
         >>> hamming_distance('', '')
@@ -140,23 +186,39 @@ def hamming_distance(string1, string2):
         >>> hamming_distance('JOHN', 'john')
         4
     """
-    # return Levenshtein.hamming(string1, string2)
+
     return sum(bool(ord(c1) - ord(c2)) for c1, c2 in zip(string1, string2))
 
 @utils.sim_check_for_none
 @utils.sim_check_for_string_inputs
 def levenshtein(string1, string2):
     """
+    Computes the Levenshtein distance between two strings.
+
+    Levenshtein distance computes the minimum cost of transforming one string into the other. Transforming a string
+    is carried out using a sequence of the following operators: delete a character, insert a character, and
+    substitute one character for another.
 
     Args:
-        string1, string2 (str): Input strings
+        string1,string2 (str): Input strings
 
     Returns:
-        If string1 and string2 are valid strings then
-            Levenshtein distance (float) between two strings is returned.
+        Levenshtein distance (int)
 
-    Notes:
-        This function internally uses python-levenshtein package
+    Raises:
+        TypeError : If the inputs are not strings
+
+    Examples:
+        >>> levenshtein('a', '')
+        1
+        >>> levenshtein('example', 'samples')
+        3
+        >>> levenshtein('levenshtein', 'frankenstein')
+        6
+
+
+    Note:
+        This implementation internally uses python-levenshtein package to compute the Levenshtein distance
 
     """
     return Levenshtein.distance(string1, string2)
@@ -166,20 +228,30 @@ def levenshtein(string1, string2):
 @utils.sim_check_for_string_inputs
 def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
     """
-    Calculates the Needleman-Wunsch similarity score between two strings.
+    Computes the Needleman-Wunsch measure between two strings.
+
+    The Needleman-Wunsch generalizes the Levenshtein distance and considers global alignment between two strings.
+    Specifically, it is computed by assigning a score to each alignment between two input strings and choosing the
+    score of the best alignment, that is, the maximal score.
+
+    An alignment between two strings is a set of correspondences between the characters of between them, allowing for
+    gaps.
 
     Args:
-        string1, string2 (str) : Input strings
+        string1,string2 (str) : Input strings
 
-        gap_cost (int) : Cost of gap (default value is 1)
+        gap_cost (int) : Cost of gap (defaults to 1)
 
-        sim_score (function) : Similarity function for two chars (rep as strings)
-        (default value is identity, i.e for the same character the score is 1, else
-        the score is 0)
+        sim_score (function) : Similarity function to give a score for the correspondence between characters. Defaults
+            to an identity function, where if two characters are same it returns 1 else returns 0.
+
 
     Returns:
-        If string1 and string2 are valid strings then
-        Needleman-Wunsch similarity (int) between two strings is returned.
+        Needleman-Wunsch measure (int)
+
+
+    Raises:
+        TypeError : If the inputs are not strings
 
     Examples:
         >>> needleman_wunsch('dva', 'deeva')
@@ -209,20 +281,26 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 @utils.sim_check_for_string_inputs
 def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
     """
-    Calculates the Smith-Waterman similarity score between two strings. Cf. https://en.wikipedia.org/wiki/Smith–Waterman_algorithm, https://github.com/Simmetrics
+    Computes the Smith-Waterman measure between two strings.
+
+    The Smith–Waterman algorithm performs local sequence alignment; that is, for determining similar regions
+    between two strings. Instead of looking at the total sequence, the Smith–Waterman algorithm compares segments of
+    all possible lengths and optimizes the similarity measure.
+
 
     Args:
-        string1, string2 (str) : Input strings
+        string1,string2 (str) : Input strings
 
-        gap_cost (int) : Cost of gap (default value is 1)
+        gap_cost (int) : Cost of gap (defaults to 1)
 
-        sim_score (function) : Similarity function for two chars (rep as strings)
-        (default value is identity, i.e for the same character the score is 1, else
-        the score is 0)
+        sim_score (function) : Similarity function to give a score for the correspondence between characters. Defaults
+            to an identity function, where if two characters are same it returns 1 else returns 0.
 
     Returns:
-        If string1 and string2 are valid strings then
-        Needleman-Wunsch similarity (int) between two strings is returned.
+        Smith-Waterman measure (int)
+
+    Raises:
+        TypeError : If the inputs are not strings
 
     Examples:
         >>> smith_waterman('cat', 'hat')
@@ -255,15 +333,33 @@ def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
 @utils.sim_check_for_empty
 def cosine(set1, set2):
     """
-    Cosine similarity between two sets.
+    Computes the cosine similarity between two sets.
+
+    For two sets X and Y, the cosine similarity is:
+
+    :math:`cosine(X, Y) = \\frac{|X \\cap Y|}{\\sqrt{|X| \\cdot |Y|}}`
+
 
     Args:
-        set1, set2 (list): input sets
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
 
     Returns:
-        If set1 and set2 are valid sets then
-            cosine similarity (float) between two bags is returned.
+        Cosine similarity (float)
 
+    Raises:
+        TypeError : If the inputs are not sets (or lists).
+
+    Examples:
+     >>> cosine(['data', 'science'], ['data'])
+     0.7071067811865475
+     >>> cosine(['data', 'data', 'science'], ['data', 'management'])
+     0.4999999999999999
+     >>> cosine([], ['data'])
+     0.0
+
+    References:
+        * String similarity joins: An Experimental Evaluation (VLDB 2014)
+        * Project flamingo : Mike carey, Vernica
     """
 
     if not isinstance(set1, set):
@@ -279,17 +375,26 @@ def cosine(set1, set2):
 @utils.sim_check_for_empty
 def jaccard(set1, set2):
     """
-    This function calculates the Jaccard similarity coefficient.
-    The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of
-    the intersection divided by the size of the union of the sample sets.
+    Computes the Jaccard measure between two sets.
+
+    The Jaccard measure, also known as the Jaccard similarity coefficient, is a statistic used for comparing
+    the similarity and diversity of sample sets. The Jaccard coefficient measures similarity between finite sample
+    sets, and is defined as the size of the intersection divided by the size of the union of the sample sets.
+
+
+    For two sets X and Y, the Jaccard measure is:
+
+    :math:`jaccard(X, Y) = \\frac{|X \\cap Y|}{|X| \\cup |Y|}`
+
 
     Args:
-        set1, set2 (set): Input sets.
-
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
 
     Returns:
-        If set1 and set2 are valid sets/lists or single values then
-            jaccard similarity (float) between two sets is returned.
+        Jaccard similarity (float)
+
+    Raises:
+        TypeError : If the inputs are not sets (or lists).
 
     Examples:
         >>> jaccard(['data', 'science'], ['data'])
@@ -313,14 +418,37 @@ def jaccard(set1, set2):
 @utils.sim_check_for_empty
 def overlap_coefficient(set1, set2):
     """
+    Computes the overlap coefficient between two sets.
+
+    The overlap coefficient is a similarity measure related to the Jaccard
+    measure  that measures the overlap between two sets, and is defined as the size of the intersection divided by
+    the smaller of the size of the two sets.
+
+    For two sets X and Y, the overlap coefficient is:
+
+    :math:`overlap\\_coefficient(X, Y) = \\frac{|X \\cap Y|}{\\min(|X|, |Y|)}`
 
     Args:
-        set1, set2 (set): Input sets.
-
+        set1,set2 (set or list): Input sets (or lists). Input lists are converted to sets.
 
     Returns:
-        If set1 and set2 are valid sets/lists or single values then
-            overlap similarity (float) between two sets is returned.
+        Overlap coefficient (float)
+
+    Raises:
+        TypeError : If the inputs are not sets (or lists).
+
+    Examples:
+        >>> (overlap_coefficient([], [])
+        1.0
+        >>> overlap_coefficient([], ['data'])
+        0
+        >>> overlap_coefficient(['data', 'science'], ['data'])
+        1.0
+
+    References:
+        * Wikipedia article : https://en.wikipedia.org/wiki/Overlap_coefficient
+        * Simmetrics library
+
     """
 
     if not isinstance(set1, set):
@@ -341,19 +469,36 @@ def overlap_coefficient(set1, set2):
 @utils.sim_check_for_empty
 def monge_elkan(bag1, bag2, sim_func=levenshtein):
     """
-    Compute monge elkan similarity measures between two lists.
-    Monge-Elkan measure is not symmetric. There is a variant that considers symmetricness.
-    But currently we just implement the monge elkan measure as given in the DI book.
+    Compute Monge-Elkan similarity measure between two bags (lists).
+
+    The Monge-Elkan similarity measure is a type of Hybrid similarity measure that combine the benefits of
+    sequence-based and set-based methods. This can be effective for domains in which more control is needed
+    over the similarity measure. It implicitly uses a secondary similarity measure, such as levenshtein to compute
+    over all similarity score.
 
     Args:
-        bag1, bag2 (list): Input lists
+        bag1,bag2 (list): Input lists
 
-        sim_func: Similarity function to be used for each pair of tokens. This is expected to be a sequence-based
-        similarity measure
+        sim_func (function): Secondary similarity function. This is expected to be a sequence-based
+            similarity measure (defaults to levenshtein)
 
     Returns:
-        If bag1 and bag2 are valid lists then monge-elkan similarity between the two bags is returned.
+        Monge-Elkan similarity score (float)
 
+    Raises:
+        TypeError : If the inputs are not lists
+
+
+    Examples:
+        >>> monge_elkan(['Niall'], ['Neal'])
+        2.0
+        >>> monge_elkan([''], ['a'])
+        1.0
+        >>> monge_elkan(['Niall'], ['Nigel'])
+        2.0
+
+    References:
+        * Principles of Data Integration book
     """
     sum_of_maxes = 0
     for t1 in bag1:
@@ -363,3 +508,4 @@ def monge_elkan(bag1, bag2, sim_func=levenshtein):
         sum_of_maxes += max_sim
     sim = float(sum_of_maxes) / float(len(bag1))
     return sim
+

@@ -1,14 +1,17 @@
 from __future__ import unicode_literals
+
 import math
-from nose.tools import *
+
 import unittest
 
-from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
+from nose.tools import *
+# sequence based similarity measures
+from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch, \
+    smith_waterman, affine
+# token based similarity measures
 from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine
+# hybrid similarity measures
 from py_stringmatching.simfunctions import monge_elkan
-from py_stringmatching.simfunctions import smith_waterman, affine
-
-from py_stringmatching.tokenizers import qgram, whitespace
 
 
 # ---------------------- sequence based similarity measures  ----------------------
@@ -17,12 +20,12 @@ from py_stringmatching.tokenizers import qgram, whitespace
 class AffineTestCases(unittest.TestCase):
     def test_valid_input(self):
         self.assertAlmostEqual(affine('dva', 'deeva'), 1.5)
-        self.assertAlmostEqual(affine('dva', 'deeve', gap_start=-2, gap_continuation=-0.5), -0.5)
+        self.assertAlmostEqual(affine('dva', 'deeve', gap_start=2, gap_continuation=0.5), -0.5)
         self.assertAlmostEqual(
-            affine('AAAGAATTCA', 'AAATCA', gap_continuation=-0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))),
+            affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))),
             4.4)
         self.assertAlmostEqual(
-            affine(' ', ' ', gap_continuation=-0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))), 1)
+            affine(' ', ' ', gap_continuation=0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0))), 1)
 
     @raises(TypeError)
     def test_invalid_input1(self):
@@ -321,7 +324,7 @@ class CosineTestCases(unittest.TestCase):
 # ---------------------- hybrid similarity measure  ----------------------
 class MongeElkanTestCases(unittest.TestCase):
     def test_valid_input(self):
-        self.assertEqual(monge_elkan([''], ['']), 1.0)
+        self.assertEqual(monge_elkan([''], ['']), 1.0) # need to check this
 
         self.assertEqual(monge_elkan([''], ['a']), 1.0)
         self.assertEqual(monge_elkan(['a'], ['a']), 1)
