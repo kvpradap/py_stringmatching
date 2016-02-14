@@ -4,7 +4,7 @@ from nose.tools import *
 import unittest
 
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch
-from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine
+from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine, tfidf
 from py_stringmatching.simfunctions import monge_elkan
 from py_stringmatching.simfunctions import smith_waterman, affine
 
@@ -294,6 +294,30 @@ class CosineTestCases(unittest.TestCase):
     def test_invalid_input3(self):
         cosine(None, None)
 
+
+class TfidfTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']]), 0.17541160386140586)
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']]), 0.5547001962252291)
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a']), 0.7071067811865475)
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']]), 0.0)
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a']), 0.7071067811865475)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        tfidf(1, 1)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        tfidf(['a'], None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        tfidf(None, ['b'])
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        tfidf(None, None)
 
 # ---------------------- bag based similarity measures  ----------------------
 # class CosineTestCases(unittest.TestCase):
