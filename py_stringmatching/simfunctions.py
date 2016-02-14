@@ -345,8 +345,9 @@ def tfidf(x_tok, y_tok, corpus_list = None):
     for document in corpus_list:
         temp_set = set()
         for element in document:
-            temp_set.add(element)
-            total_unique_elements.add(element)
+            if element in x_tok or element in y_tok:
+                temp_set.add(element)
+                total_unique_elements.add(element)
         for element in temp_set:
             element_freq[element] = element_freq[element]+1 if element in element_freq else 1
     idf, v_x, v_y, v_x_y, v_x_2, v_y_2 = {}, {}, {}, 0.0, 0.0, 0.0
