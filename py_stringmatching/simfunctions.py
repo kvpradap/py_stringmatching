@@ -270,7 +270,7 @@ def levenshtein(string1, string2):
 
 @utils.sim_check_for_none
 @utils.sim_check_for_string_inputs
-def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
+def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     """
     Computes the Needleman-Wunsch measure between two strings.
 
@@ -284,14 +284,14 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
     Args:
         string1,string2 (str) : Input strings
 
-        gap_cost (int) : Cost of gap (defaults to 1)
+        gap_cost (float) : Cost of gap (defaults to 1.0)
 
         sim_score (function) : Similarity function to give a score for the correspondence between characters. Defaults
-            to an identity function, where if two characters are same it returns 1 else returns 0.
+            to an identity function, where if two characters are same it returns 1.0 else returns 0.
 
 
     Returns:
-        Needleman-Wunsch measure (int)
+        Needleman-Wunsch measure (float)
 
 
     Raises:
@@ -299,15 +299,15 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 
     Examples:
         >>> needleman_wunsch('dva', 'deeva')
-        0
-        >>> needleman_wunsch('dva', 'deeve', 0)
-        2
-        >>> needleman_wunsch('dva', 'deeve', 1, sim_score=lambda s1, s2 : (int(2 if s1 == s2 else -1)))
-        1
-        >>> needleman_wunsch('GCATGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else -1)))
-        0
+        1.0
+        >>> needleman_wunsch('dva', 'deeve', 0.0)
+        2.0
+        >>> needleman_wunsch('dva', 'deeve', 1.0, sim_score=lambda s1, s2 : (2.0 if s1 == s2 else -1.0))
+        1.0
+        >>> needleman_wunsch('GCATGCUA', 'GATTACA', gap_cost=0.5, sim_score=lambda s1, s2 : (1.0 if s1 == s2 else -1.0))
+        2.5
     """
-    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     for i in _range(len(string1) + 1):
         dist_mat[i, 0] = -(i * gap_cost)
     for j in _range(len(string2) + 1):
@@ -323,7 +323,7 @@ def needleman_wunsch(string1, string2, gap_cost=1, sim_score=sim_ident):
 
 @utils.sim_check_for_none
 @utils.sim_check_for_string_inputs
-def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
+def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     """
     Computes the Smith-Waterman measure between two strings.
 
@@ -335,28 +335,28 @@ def smith_waterman(string1, string2, gap_cost=1, sim_score=sim_ident):
     Args:
         string1,string2 (str) : Input strings
 
-        gap_cost (int) : Cost of gap (defaults to 1)
+        gap_cost (float) : Cost of gap (defaults to 1.0)
 
         sim_score (function) : Similarity function to give a score for the correspondence between characters. Defaults
             to an identity function, where if two characters are same it returns 1 else returns 0.
 
     Returns:
-        Smith-Waterman measure (int)
+        Smith-Waterman measure (float)
 
     Raises:
         TypeError : If the inputs are not strings
 
     Examples:
         >>> smith_waterman('cat', 'hat')
-        2
-        >>> smith_waterman('dva', 'deeve', 0)
-        2
-        >>> smith_waterman('dva', 'deeve', 1, sim_score=lambda s1, s2 : (int(2 if s1 == s2 else -1)))
-        2
-        >>> smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
-        3
+        2.0
+        >>> smith_waterman('dva', 'deeve', 2.2)
+        1.0
+        >>> smith_waterman('dva', 'deeve', 1, sim_score=lambda s1, s2 : (2 if s1 == s2 else -1))
+        2.0
+        >>> smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1.4, sim_score=lambda s1, s2 : (1.5 if s1 == s2 else 0.5))
+        6.5
     """
-    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.int)
+    dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     max_value = 0
     for i in _range(1, len(string1) + 1):
         for j in _range(1, len(string2) + 1):
