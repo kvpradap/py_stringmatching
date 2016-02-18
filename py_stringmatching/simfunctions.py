@@ -434,7 +434,6 @@ def soft_tfidf(x_tok, y_tok, corpus_list=None, sim_func=jaro, threshold=0.5):
         idf = corpus_size if element not in element_freq else corpus_size / element_freq[element]
         v_x = 0 if element not in tf_x else idf * tf_x[element]
         v_x_2 += v_x * v_x
-        idf = corpus_size if element not in element_freq else corpus_size / element_freq[element]
         v_y = 0 if element not in tf_y else idf * tf_y[element]
         v_y_2 += v_y * v_y
     return result if v_x_2 == 0 else result/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
