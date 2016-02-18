@@ -297,6 +297,7 @@ class CosineTestCases(unittest.TestCase):
 
 class TfidfTestCases(unittest.TestCase):
     def test_valid_input(self):
+        self.assertEqual(tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a'], ['b']], True), 0.11166746710505392)
         self.assertEqual(tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']]), 0.17541160386140586)
         self.assertEqual(tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']]), 0.5547001962252291)
         self.assertEqual(tfidf(['a', 'b', 'a'], ['a']), 0.7071067811865475)

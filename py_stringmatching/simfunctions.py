@@ -312,7 +312,7 @@ def overlap_coefficient(set1, set2):
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
-def tfidf(x_tok, y_tok, corpus_list = None):
+def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
     """
     Compute tfidf measures between two lists given the corpus information.
     This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that are relevant to keyword queries.
@@ -329,9 +329,13 @@ def tfidf(x_tok, y_tok, corpus_list = None):
     Examples:
         >>> tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']])
         0.17541160386140586
+        >>> tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a'], ['b']], True)
+        0.11166746710505392
         >>> tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']])
         0.5547001962252291
         >>> tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']])
+        0.0
+        >>> tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']], True)
         0.0
         >>> tfidf(['a', 'b', 'a'], ['a'])
         0.7071067811865475
@@ -350,14 +354,14 @@ def tfidf(x_tok, y_tok, corpus_list = None):
                 total_unique_elements.add(element)
         for element in temp_set:
             element_freq[element] = element_freq[element]+1 if element in element_freq else 1
-    idf, v_x, v_y, v_x_y, v_x_2, v_y_2 = {}, {}, {}, 0.0, 0.0, 0.0
+    idf_element, v_x, v_y, v_x_y, v_x_2, v_y_2 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
     for element in total_unique_elements:
-        idf[element] = corpus_size * 1.0 / element_freq[element]
-        v_x[element] = 0 if element not in tf_x else idf[element] * tf_x[element]
-        v_y[element] = 0 if element not in tf_y else idf[element] * tf_y[element]
-        v_x_y += v_x[element] * v_y[element]
-        v_x_2 += v_x[element] * v_x[element]
-        v_y_2 += v_y[element] * v_y[element]
+        idf_element = corpus_size * 1.0 / element_freq[element]
+        v_x = 0 if element not in tf_x else (math.log(idf_element) * math.log(tf_x[element] + 1)) if dampen else (idf_element * tf_x[element])
+        v_y = 0 if element not in tf_y else (math.log(idf_element) * math.log(tf_y[element] + 1)) if dampen else (idf_element * tf_y[element])
+        v_x_y += v_x * v_y
+        v_x_2 += v_x * v_x
+        v_y_2 += v_y * v_y
     return 0.0 if v_x_y == 0 else v_x_y/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
 
 
