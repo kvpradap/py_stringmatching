@@ -467,7 +467,7 @@ def overlap_coefficient(set1, set2):
 @utils.sim_check_for_list_or_set_inputs
 @utils.sim_check_for_exact_match
 @utils.sim_check_for_empty
-def monge_elkan(bag1, bag2, sim_func=levenshtein):
+def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     """
     Compute Monge-Elkan similarity measure between two bags (lists).
 
@@ -491,11 +491,17 @@ def monge_elkan(bag1, bag2, sim_func=levenshtein):
 
     Examples:
         >>> monge_elkan(['Niall'], ['Neal'])
+        0.8049999999999999
+        >>> monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'], ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'])
+        0.8677218614718616
+        >>> monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'], ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'], sim_func=needleman_wunsch)
         2.0
+        >>> monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'], ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'], sim_func=affine)
+        2.25
         >>> monge_elkan([''], ['a'])
-        1.0
+        0.0
         >>> monge_elkan(['Niall'], ['Nigel'])
-        2.0
+        0.7866666666666667
 
     References:
         * Principles of Data Integration book
