@@ -107,11 +107,49 @@ def jaro(string1, string2):
         >>> jaro('DIXON', 'DICKSONX')
         0.7666666666666666
 
-    Note:
-        This implementation internally uses python-levenshtein package to compute the Jaro measure.
+
     """
 
-    return Levenshtein.jaro(string1, string2)
+    len_s1 = len(string1)
+    len_s2 = len(string2)
+
+    max_len = max(len_s1, len_s2)
+    search_range = (max_len // 2) - 1
+    if search_range < 0:
+        search_range = 0
+
+    flags_s1 = [False] * len_s1
+    flags_s2 = [False] * len_s2
+
+    common_chars = 0
+    for i, ch_s1 in enumerate(string1):
+        low = i - search_range if i > search_range else 0
+        hi = i + search_range if i + search_range < len_s2 else len_s2 - 1
+        for j in _range(low, hi + 1):
+            if not flags_s2[j] and string2[j] == ch_s1:
+                flags_s1[i] = flags_s2[j] = True
+                common_chars += 1
+                break
+    if not common_chars:
+        return 0
+
+    k = trans_count = 0
+    for i, f_s1 in enumerate(flags_s1):
+        if f_s1:
+            for j in _range(k, len_s2):
+                if flags_s2[j]:
+                    k = j + 1
+                    break
+            if string1[i] != string2[j]:
+                trans_count += 1
+    trans_count /= 2
+    # print trans_count, common_chars
+
+
+    common_chars = float(common_chars)
+    weight = ((common_chars / len_s1 + common_chars / len_s2 +
+               (common_chars - trans_count) / common_chars)) / 3
+    return weight
 
 
 # jaro-winkler
@@ -146,11 +184,17 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
         >>> jaro_winkler('DIXON', 'DICKSONX')
         0.8133333333333332
 
-    Note:
-        This implementation internally uses python-levenshtein package to compute the Jaro-Winkler measure.
-
     """
-    return Levenshtein.jaro_winkler(string1, string2, prefix_weight)
+    jw_score = jaro(string1, string2)
+    max_len = max(len(string1), len(string2))
+    j = min(max_len, 4)
+    i = 0
+    while i < j and string1[i] == string2[i] and string1[i]:
+        i += 1
+    if i:
+        jw_score += i * prefix_weight * (1 - jw_score)
+
+    return jw_score
 
 
 @utils.sim_check_for_none
