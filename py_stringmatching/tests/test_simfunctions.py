@@ -320,16 +320,39 @@ class CosineTestCases(unittest.TestCase):
 #         cosine(None, None)
 
 
-
 # ---------------------- hybrid similarity measure  ----------------------
 class MongeElkanTestCases(unittest.TestCase):
     def test_valid_input(self):
         self.assertEqual(monge_elkan([''], ['']), 1.0) # need to check this
 
-        self.assertEqual(monge_elkan([''], ['a']), 1.0)
-        self.assertEqual(monge_elkan(['a'], ['a']), 1)
+        self.assertEqual(monge_elkan([''], ['a']), 0.0)
+        self.assertEqual(monge_elkan(['a'], ['a']), 1.0)
 
-        self.assertEqual(monge_elkan(['Niall'], ['Neal']), 2.0)
-        self.assertEqual(monge_elkan(['Niall'], ['Njall']), 1.0)
-        self.assertEqual(monge_elkan(['Niall'], ['Niel']), 2.0)
-        self.assertEqual(monge_elkan(['Niall'], ['Nigel']), 2.0)
+        self.assertEqual(monge_elkan(['Niall'], ['Neal']), 0.8049999999999999)
+        self.assertEqual(monge_elkan(['Niall'], ['Njall']), 0.88)
+        self.assertEqual(monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'],
+                                     ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego']), 0.8677218614718616)
+        self.assertEqual(monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'],
+                                     ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'],
+                                     sim_func=needleman_wunsch), 2.0)
+        self.assertEqual(monge_elkan(['Comput.', 'Sci.', 'and', 'Eng.', 'Dept.,', 'University', 'of', 'California,', 'San', 'Diego'],
+                                     ['Department', 'of', 'Computer', 'Science,', 'Univ.', 'Calif.,', 'San', 'Diego'],
+                                     sim_func=affine), 2.25)
+        self.assertEqual(monge_elkan(['Niall'], ['Niel']), 0.8266666666666667)
+        self.assertEqual(monge_elkan(['Niall'], ['Nigel']), 0.7866666666666667)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        monge_elkan(1, 1)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        monge_elkan(['a'], None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        monge_elkan(None, ['b'])
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        monge_elkan(None, None)
