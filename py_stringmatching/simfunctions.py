@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import unicode_literals
 
 import Levenshtein
-import math
+import math, collections
 
 from py_stringmatching import utils
 import numpy as np
@@ -504,7 +504,58 @@ def overlap_coefficient(set1, set2):
 
 
 # ---------------------- bag based similarity measures  ----------------------
-
+@utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
+    """
+    Compute tfidf measures between two lists given the corpus information.
+    This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that are relevant to keyword queries.
+    The intuition underlying the TF/IDF measure is that two strings are similar if they share distinguishing terms.
+    Args:
+        x_tok, y_tok (list): Input lists
+        corpus_list (list of lists): Corpus list (default is set to None). If set to None,
+        the input list are considered the only corpus
+    Returns:
+        TF-IDF measure between the input lists
+    Examples:
+        >>> tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']])
+        0.17541160386140586
+        >>> tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a'], ['b']], True)
+        0.11166746710505392
+        >>> tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']])
+        0.5547001962252291
+        >>> tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']])
+        0.0
+        >>> tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']], True)
+        0.0
+        >>> tfidf(['a', 'b', 'a'], ['a'])
+        0.7071067811865475
+    """
+    if corpus_list is None:
+        corpus_list = [x_tok, y_tok]
+    corpus_size = len(corpus_list)
+    tf_x, tf_y = collections.Counter(x_tok), collections.Counter(y_tok)
+    element_freq = {}
+    total_unique_elements = set()
+    for document in corpus_list:
+        temp_set = set()
+        for element in document:
+            if element in x_tok or element in y_tok:
+                temp_set.add(element)
+                total_unique_elements.add(element)
+        for element in temp_set:
+            element_freq[element] = element_freq[element]+1 if element in element_freq else 1
+    idf_element, v_x, v_y, v_x_y, v_x_2, v_y_2 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    for element in total_unique_elements:
+        idf_element = corpus_size * 1.0 / element_freq[element]
+        v_x = 0 if element not in tf_x else (math.log(idf_element) * math.log(tf_x[element] + 1)) if dampen else (idf_element * tf_x[element])
+        v_y = 0 if element not in tf_y else (math.log(idf_element) * math.log(tf_y[element] + 1)) if dampen else (idf_element * tf_y[element])
+        v_x_y += v_x * v_y
+        v_x_2 += v_x * v_x
+        v_y_2 += v_y * v_y
+    return 0.0 if v_x_y == 0 else v_x_y/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
 
 # hybrid similarity measures
 @utils.sim_check_for_none
