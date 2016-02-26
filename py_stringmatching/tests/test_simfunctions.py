@@ -9,7 +9,7 @@ from nose.tools import *
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch, \
     smith_waterman, affine
 # token based similarity measures
-from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine, tfidf
+from py_stringmatching.simfunctions import overlap_coefficient, jaccard, cosine, tfidf, soft_tfidf
 # hybrid similarity measures
 from py_stringmatching.simfunctions import monge_elkan
 
@@ -345,6 +345,33 @@ class TfidfTestCases(unittest.TestCase):
 
 
 # ---------------------- hybrid similarity measure  ----------------------
+
+class Soft_TfidfTestCases(unittest.TestCase):
+    def test_valid_input(self):
+        self.assertEqual(soft_tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']], sim_func=jaro,
+                                    threshold=0.8), 0.17541160386140586)
+        self.assertEqual(soft_tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']],
+                                    threshold=0.9), 0.5547001962252291)
+        self.assertEqual(soft_tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']]), 0.0)
+        self.assertEqual(soft_tfidf(['aa', 'bb', 'a'], ['ab', 'ba'], sim_func=affine, threshold=0.6),
+                         0.81649658092772592)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        soft_tfidf(1, 1)
+
+    @raises(TypeError)
+    def test_invalid_input1(self):
+        soft_tfidf(['a'], None)
+
+    @raises(TypeError)
+    def test_invalid_input2(self):
+        soft_tfidf(None, ['b'])
+
+    @raises(TypeError)
+    def test_invalid_input3(self):
+        soft_tfidf(None, None)
+
 class MongeElkanTestCases(unittest.TestCase):
     def test_valid_input(self):
         self.assertEqual(monge_elkan([''], ['']), 1.0) # need to check this

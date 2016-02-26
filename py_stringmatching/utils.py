@@ -93,7 +93,11 @@ def tok_check_for_string_input(func):
     return decorator
 
 
-
+class Similarity:
+    def __init__(self, string1, string2, score):
+        self.first_string = string1
+        self.second_string = string2
+        self.similarity_score = score
 
 
 

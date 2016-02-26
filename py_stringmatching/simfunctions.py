@@ -511,14 +511,18 @@ def overlap_coefficient(set1, set2):
 def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
     """
     Compute tfidf measures between two lists given the corpus information.
-    This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that are relevant to keyword queries.
+    This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that
+    are relevant to keyword queries.
     The intuition underlying the TF/IDF measure is that two strings are similar if they share distinguishing terms.
+
     Args:
         x_tok, y_tok (list): Input lists
         corpus_list (list of lists): Corpus list (default is set to None). If set to None,
         the input list are considered the only corpus
+
     Returns:
         TF-IDF measure between the input lists
+
     Examples:
         >>> tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']])
         0.17541160386140586
@@ -610,3 +614,76 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     sim = float(sum_of_maxes) / float(len(bag1))
     return sim
 
+@utils.sim_check_for_none
+@utils.sim_check_for_list_or_set_inputs
+@utils.sim_check_for_exact_match
+@utils.sim_check_for_empty
+def soft_tfidf(x_tok, y_tok, corpus_list=None, sim_func=jaro, threshold=0.5):
+    """
+    Compute Soft-tfidf measures between two lists given the corpus information.
+    This measure is similar in spirit to the generalized Jaccard measure, except that it uses the TF/IDF measure
+    instead of Jaccard measure as the higher level similarity measure.
+
+    Args:
+        x_tok, y_tok (list): Input lists
+        corpus_list (list of lists): Corpus list (default is set to None). If set to None,
+        the input list are considered the only corpus
+        sim_func (func(string1, string2)): this should return a similarity score between two strings (optional),
+        default is jaro similarity measure
+        threshold (float): threshold value for the given similarity function. Defaults to 0.5
+
+    Returns:
+        Soft TF-IDF measure between the input lists
+
+    Examples:
+        >>> soft_tfidf(['a', 'b', 'a'], ['a', 'c'], [['a', 'b', 'a'], ['a', 'c'], ['a']], sim_func=jaro, threshold=0.8)
+        0.17541160386140586
+        >>> soft_tfidf(['a', 'b', 'a'], ['a'], [['a', 'b', 'a'], ['a', 'c'], ['a']], threshold=0.9)
+        0.5547001962252291
+        >>> soft_tfidf(['a', 'b', 'a'], ['a'], [['x', 'y'], ['w'], ['q']])
+        0.0
+        >>> soft_tfidf(['aa', 'bb', 'a'], ['ab', 'ba'], sim_func=affine, threshold=0.6)
+        0.81649658092772592
+    """
+    if corpus_list is None:
+        corpus_list = [x_tok, y_tok]
+    corpus_size = len(corpus_list) * 1.0
+    tf_x, tf_y = collections.Counter(x_tok), collections.Counter(y_tok)
+    element_freq = {}
+    total_unique_elements = set()
+    for document in corpus_list:
+        temp_set = set()
+        for element in document:
+            if element in x_tok or element in y_tok:
+                temp_set.add(element)
+                total_unique_elements.add(element)
+        for element in temp_set:
+            element_freq[element] = element_freq[element]+1 if element in element_freq else 1
+    similarity_map = {}
+    for x in x_tok:
+        if x not in similarity_map:
+            max_score = 0.0
+            for y in y_tok:
+                score = sim_func(x,y)
+                if score > threshold and score > max_score:
+                    similarity_map[x] = utils.Similarity(x, y, score)
+                    max_score = score
+    result, v_x_2, v_y_2 = 0.0, 0.0, 0.0
+    for element in total_unique_elements:
+        # numerator
+        if element in similarity_map:
+            sim = similarity_map[element]
+            idf_first = corpus_size if sim.first_string not in element_freq else corpus_size / \
+                                                                                 element_freq[sim.first_string]
+            idf_second = corpus_size if sim.second_string not in element_freq else corpus_size / \
+                                                                                   element_freq[sim.second_string]
+            v_x = 0 if sim.first_string not in tf_x else idf_first * tf_x[sim.first_string]
+            v_y = 0 if sim.second_string not in tf_y else idf_second * tf_y[sim.second_string]
+            result += v_x * v_y * sim.similarity_score
+        # denominator
+        idf = corpus_size if element not in element_freq else corpus_size / element_freq[element]
+        v_x = 0 if element not in tf_x else idf * tf_x[element]
+        v_x_2 += v_x * v_x
+        v_y = 0 if element not in tf_y else idf * tf_y[element]
+        v_y_2 += v_y * v_y
+    return result if v_x_2 == 0 else result/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
