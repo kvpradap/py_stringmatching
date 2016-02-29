@@ -1,9 +1,9 @@
 from .compat import _range
 from py_stringmatching import utils
 
-#@todo: add examples in the comments
-@utils.tok_check_for_none
-@utils.tok_check_for_string_input
+
+# @todo: add examples in the comments
+
 def qgram(input_string, qval=2):
     """
     Tokenizes input string into q-grams.
@@ -32,6 +32,9 @@ def qgram(input_string, qval=2):
 
 
     """
+    utils.tok_check_for_none(input_string)
+    utils.tok_check_for_string_input(input_string)
+
     qgram_list = []
 
     if len(input_string) < qval or qval < 1:
@@ -40,8 +43,7 @@ def qgram(input_string, qval=2):
     qgram_list = [input_string[i:i+qval] for i in _range(len(input_string)-(qval-1))]
     return qgram_list
 
-@utils.tok_check_for_none
-@utils.tok_check_for_string_input
+
 def delimiter(input_string, delim_str=' '):
     """
     Tokenizes input string based on the given delimiter.
@@ -67,10 +69,12 @@ def delimiter(input_string, delim_str=' '):
         ['data science']
 
     """
+    utils.tok_check_for_none(input_string)
+    utils.tok_check_for_string_input(input_string)
+
     return input_string.split(delim_str)
 
-@utils.tok_check_for_none
-@utils.tok_check_for_string_input
+
 def whitespace(input_string):
     """
     Tokenizes input string based on white space.
@@ -93,6 +97,9 @@ def whitespace(input_string):
         ['data', 'science']
 
     """
+    utils.tok_check_for_none(input_string)
+    utils.tok_check_for_string_input(input_string)
+
     return input_string.split()
 
 
