@@ -186,8 +186,8 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
 
     """
     jw_score = jaro(string1, string2)
-    max_len = max(len(string1), len(string2))
-    j = min(max_len, 4)
+    min_len = min(len(string1), len(string2))
+    j = min(min_len, 4)
     i = 0
     while i < j and string1[i] == string2[i] and string1[i]:
         i += 1
