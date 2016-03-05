@@ -36,7 +36,15 @@ class AffineTestCases(unittest.TestCase):
         affine('MARHTA', None)
 
     @raises(TypeError)
-    def test_invalid_input2(self):
+    def test_invalid_input3(self):
+        affine('MARHTA', 12.90)
+
+    @raises(TypeError)
+    def test_invalid_input4(self):
+        affine(12.90, 'MARTHA')
+
+    @raises(TypeError)
+    def test_invalid_input5(self):
         affine(None, None)
 
 
@@ -56,7 +64,7 @@ class JaroTestCases(unittest.TestCase):
         jaro('MARHTA', None)
 
     @raises(TypeError)
-    def test_invalid_input2(self):
+    def test_invalid_input3(self):
         jaro(None, None)
 
 
@@ -76,7 +84,7 @@ class JaroWinklerTestCases(unittest.TestCase):
         jaro_winkler('MARHTA', None)
 
     @raises(TypeError)
-    def test_invalid_input2(self):
+    def test_invalid_input3(self):
         jaro_winkler(None, None)
 
 
@@ -286,7 +294,7 @@ class CosineTestCases(unittest.TestCase):
         cosine(1, 1)
 
     @raises(TypeError)
-    def test_invalid_input1(self):
+    def test_invalid_input4(self):
         cosine(['a'], None)
 
     @raises(TypeError)
@@ -311,7 +319,7 @@ class TfidfTestCases(unittest.TestCase):
         tfidf(1, 1)
 
     @raises(TypeError)
-    def test_invalid_input1(self):
+    def test_invalid_input4(self):
         tfidf(['a'], None)
 
     @raises(TypeError)
@@ -361,7 +369,7 @@ class Soft_TfidfTestCases(unittest.TestCase):
         soft_tfidf(1, 1)
 
     @raises(TypeError)
-    def test_invalid_input1(self):
+    def test_invalid_input4(self):
         soft_tfidf(['a'], None)
 
     @raises(TypeError)
@@ -371,6 +379,7 @@ class Soft_TfidfTestCases(unittest.TestCase):
     @raises(TypeError)
     def test_invalid_input3(self):
         soft_tfidf(None, None)
+
 
 class MongeElkanTestCases(unittest.TestCase):
     def test_valid_input(self):
@@ -397,7 +406,7 @@ class MongeElkanTestCases(unittest.TestCase):
         monge_elkan(1, 1)
 
     @raises(TypeError)
-    def test_invalid_input1(self):
+    def test_invalid_input4(self):
         monge_elkan(['a'], None)
 
     @raises(TypeError)

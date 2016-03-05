@@ -14,7 +14,7 @@ class QgramTestCases(unittest.TestCase):
         self.assertEqual(qgram('d', 1), ['d'])
         self.assertEqual(qgram('database', 3), ['dat', 'ata', 'tab', 'aba', 'bas', 'ase'])
 
-
+    @raises(TypeError)
     def test_qgrams_none(self):
         self.assertEqual(qgram(None), [])
 
@@ -27,12 +27,15 @@ class DelimiterTestCases(unittest.TestCase):
             self.assertEqual(delimiter('data$#$science', '$#$'), ['data', 'science'])
 
         def test_delimiter_invalid1(self):
-            self.assertEqual(delimiter(None), [])
             self.assertEqual(delimiter('data science', None), ['data', 'science'])
 
         @raises(TypeError)
         def test_delimiter_invalid2(self):
             self.assertEqual(delimiter('data science', 10), ['data', 'science'])
+
+        @raises(TypeError)
+        def test_delimiter_invalid3(self):
+            self.assertEqual(delimiter(None), [])
 
 
 

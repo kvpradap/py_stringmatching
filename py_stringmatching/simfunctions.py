@@ -16,9 +16,6 @@ def sim_ident(s1, s2):
 # ---------------------- sequence based similarity measures  ----------------------
 
 
-@utils.sim_check_for_none
-@utils.tok_check_for_string_input
-@utils.sim_check_for_empty
 def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_ident):
     """
     Computes the Affine gap score between two strings.
@@ -52,6 +49,11 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
         >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
         4.4
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.tok_check_for_string_input(string1, string2)
+    if utils.sim_check_for_empty(string1, string2):
+        return 0
+
     gap_start = -gap_start
     gap_continuation = -gap_continuation
     M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
@@ -77,9 +79,6 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
 
 
 # jaro
-@utils.sim_check_for_none
-@utils.tok_check_for_string_input
-@utils.sim_check_for_empty
 def jaro(string1, string2):
     """
     Computes the Jaro measure between two strings.
@@ -109,6 +108,10 @@ def jaro(string1, string2):
 
 
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.tok_check_for_string_input(string1, string2)
+    if utils.sim_check_for_empty(string1, string2):
+        return 0
 
     len_s1 = len(string1)
     len_s2 = len(string2)
@@ -153,9 +156,6 @@ def jaro(string1, string2):
 
 
 # jaro-winkler
-@utils.sim_check_for_none
-@utils.tok_check_for_string_input
-@utils.sim_check_for_empty
 def jaro_winkler(string1, string2, prefix_weight=0.1):
     """
     Computes the Jaro-Winkler measure between two strings.
@@ -185,6 +185,11 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
         0.8133333333333332
 
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.tok_check_for_string_input(string1, string2)
+    if utils.sim_check_for_empty(string1, string2):
+        return 0
+
     jw_score = jaro(string1, string2)
     min_len = min(len(string1), len(string2))
     j = min(min_len, 4)
@@ -197,9 +202,6 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
     return jw_score
 
 
-@utils.sim_check_for_none
-@utils.tok_check_for_string_input
-@utils.sim_check_for_same_len
 def hamming_distance(string1, string2):
     """
     Computes the Hamming distance between two strings.
@@ -230,11 +232,12 @@ def hamming_distance(string1, string2):
         >>> hamming_distance('JOHN', 'john')
         4
     """
-
+    utils.sim_check_for_none(string1, string2)
+    utils.tok_check_for_string_input(string1, string2)
+    utils.sim_check_for_same_len(string1, string2)
     return sum(bool(ord(c1) - ord(c2)) for c1, c2 in zip(string1, string2))
 
-@utils.sim_check_for_none
-@utils.sim_check_for_string_inputs
+
 def levenshtein(string1, string2):
     """
     Computes the Levenshtein distance between two strings.
@@ -265,11 +268,12 @@ def levenshtein(string1, string2):
         This implementation internally uses python-levenshtein package to compute the Levenshtein distance
 
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+
     return Levenshtein.distance(string1, string2)
 
 
-@utils.sim_check_for_none
-@utils.sim_check_for_string_inputs
 def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     """
     Computes the Needleman-Wunsch measure between two strings.
@@ -307,6 +311,9 @@ def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
         >>> needleman_wunsch('GCATGCUA', 'GATTACA', gap_cost=0.5, sim_score=lambda s1, s2 : (1.0 if s1 == s2 else -1.0))
         2.5
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+
     dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     for i in _range(len(string1) + 1):
         dist_mat[i, 0] = -(i * gap_cost)
@@ -321,8 +328,6 @@ def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
 
 
-@utils.sim_check_for_none
-@utils.sim_check_for_string_inputs
 def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
     """
     Computes the Smith-Waterman measure between two strings.
@@ -356,6 +361,9 @@ def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
         >>> smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1.4, sim_score=lambda s1, s2 : (1.5 if s1 == s2 else 0.5))
         6.5
     """
+    utils.sim_check_for_none(string1, string2)
+    utils.sim_check_for_string_inputs(string1, string2)
+
     dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     max_value = 0
     for i in _range(1, len(string1) + 1):
@@ -371,10 +379,6 @@ def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
 # ---------------------- token based similarity measures  ----------------------
 
 # ---------------------- set based similarity measures  ----------------------
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
 def cosine(set1, set2):
     """
     Computes the cosine similarity between two sets.
@@ -405,7 +409,12 @@ def cosine(set1, set2):
         * String similarity joins: An Experimental Evaluation (VLDB 2014)
         * Project flamingo : Mike carey, Vernica
     """
-
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
     if not isinstance(set1, set):
         set1 = set(set1)
     if not isinstance(set2, set):
@@ -413,10 +422,6 @@ def cosine(set1, set2):
     return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) * math.sqrt(float(len(set2))))
 
 
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
 def jaccard(set1, set2):
     """
     Computes the Jaccard measure between two sets.
@@ -448,7 +453,12 @@ def jaccard(set1, set2):
         >>> jaccard(['data', 'management'], ['data', 'data', 'science'])
         0.3333333333333333
     """
-
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
     if not isinstance(set1, set):
         set1 = set(set1)
     if not isinstance(set2, set):
@@ -456,10 +466,6 @@ def jaccard(set1, set2):
     return float(len(set1 & set2)) / float(len(set1 | set2))
 
 
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
 def overlap_coefficient(set1, set2):
     """
     Computes the overlap coefficient between two sets.
@@ -494,7 +500,12 @@ def overlap_coefficient(set1, set2):
         * Simmetrics library
 
     """
-
+    utils.sim_check_for_none(set1, set2)
+    utils.sim_check_for_list_or_set_inputs(set1, set2)
+    if utils.sim_check_for_exact_match(set1, set2):
+        return 1.0
+    if utils.sim_check_for_empty(set1, set2):
+        return 0
     if not isinstance(set1, set):
         set1 = set(set1)
     if not isinstance(set2, set):
@@ -504,10 +515,6 @@ def overlap_coefficient(set1, set2):
 
 
 # ---------------------- bag based similarity measures  ----------------------
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
 def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
     """
     Compute tfidf measures between two lists given the corpus information.
@@ -537,6 +544,12 @@ def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
         >>> tfidf(['a', 'b', 'a'], ['a'])
         0.7071067811865475
     """
+    utils.sim_check_for_none(x_tok, y_tok)
+    utils.sim_check_for_list_or_set_inputs(x_tok, y_tok)
+    if utils.sim_check_for_exact_match(x_tok, y_tok):
+        return 1.0
+    if utils.sim_check_for_empty(x_tok, y_tok):
+        return 0
     if corpus_list is None:
         corpus_list = [x_tok, y_tok]
     corpus_size = len(corpus_list)
@@ -561,11 +574,8 @@ def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
         v_y_2 += v_y * v_y
     return 0.0 if v_x_y == 0 else v_x_y/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
 
+
 # hybrid similarity measures
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
 def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     """
     Compute Monge-Elkan similarity measure between two bags (lists).
@@ -605,6 +615,12 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     References:
         * Principles of Data Integration book
     """
+    utils.sim_check_for_none(bag1, bag2)
+    utils.sim_check_for_list_or_set_inputs(bag1, bag2)
+    if utils.sim_check_for_exact_match(bag1, bag2):
+        return 1.0
+    if utils.sim_check_for_empty(bag1, bag2):
+        return 0
     sum_of_maxes = 0
     for t1 in bag1:
         max_sim = float('-inf')
@@ -614,10 +630,7 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     sim = float(sum_of_maxes) / float(len(bag1))
     return sim
 
-@utils.sim_check_for_none
-@utils.sim_check_for_list_or_set_inputs
-@utils.sim_check_for_exact_match
-@utils.sim_check_for_empty
+
 def soft_tfidf(x_tok, y_tok, corpus_list=None, sim_func=jaro, threshold=0.5):
     """
     Compute Soft-tfidf measures between two lists given the corpus information.
@@ -645,6 +658,12 @@ def soft_tfidf(x_tok, y_tok, corpus_list=None, sim_func=jaro, threshold=0.5):
         >>> soft_tfidf(['aa', 'bb', 'a'], ['ab', 'ba'], sim_func=affine, threshold=0.6)
         0.81649658092772592
     """
+    utils.sim_check_for_none(x_tok, y_tok)
+    utils.sim_check_for_list_or_set_inputs(x_tok, y_tok)
+    if utils.sim_check_for_exact_match(x_tok, y_tok):
+        return 1.0
+    if utils.sim_check_for_empty(x_tok, y_tok):
+        return 0
     if corpus_list is None:
         corpus_list = [x_tok, y_tok]
     corpus_size = len(corpus_list) * 1.0
