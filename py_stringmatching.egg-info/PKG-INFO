@@ -1,0 +1,13 @@
+Metadata-Version: 1.0
+Name: py-stringmatching
+Version: 0.1
+Summary: Python library for string matching.
+Home-page: http://github.com/kvpradap/py_stringmatching
+Author: Pradap Konda
+Author-email: pradap@cs.wisc.edu
+License: ['MIT']
+Description: 
+            String matching is an important problem in many settings such as data integration, natural language processing,etc.
+            This package aims to implement most commonly used string matching measures.
+            
+Platform: UNKNOWN

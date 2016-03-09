@@ -515,7 +515,7 @@ def overlap_coefficient(set1, set2):
 
 
 # ---------------------- bag based similarity measures  ----------------------
-def tfidf(bag1, bag2, corpus_list = None, dampen=False):
+def tfidf(x_tok, y_tok, corpus_list = None, dampen=False):
     """
     Compute tfidf measures between two lists given the corpus information.
     This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that
@@ -523,7 +523,7 @@ def tfidf(bag1, bag2, corpus_list = None, dampen=False):
     The intuition underlying the TF/IDF measure is that two strings are similar if they share distinguishing terms.
 
     Args:
-        bag1, bag2 (list): Input lists of Strings
+        x_tok, y_tok (list): Input lists of Strings
 
         corpus_list (list of lists): Corpus list (default is set to None) of strings. If set to None,
             the input list are considered the only corpus.
@@ -551,22 +551,22 @@ def tfidf(bag1, bag2, corpus_list = None, dampen=False):
         >>> tfidf(['a', 'b', 'a'], ['a'])
         0.7071067811865475
     """
-    utils.sim_check_for_none(bag1, bag2)
-    utils.sim_check_for_list_or_set_inputs(bag1, bag2)
-    if utils.sim_check_for_exact_match(bag1, bag2):
+    utils.sim_check_for_none(x_tok, y_tok)
+    utils.sim_check_for_list_or_set_inputs(x_tok, y_tok)
+    if utils.sim_check_for_exact_match(x_tok, y_tok):
         return 1.0
-    if utils.sim_check_for_empty(bag1, bag2):
+    if utils.sim_check_for_empty(x_tok, y_tok):
         return 0
     if corpus_list is None:
-        corpus_list = [bag1, bag2]
+        corpus_list = [x_tok, y_tok]
     corpus_size = len(corpus_list)
-    tf_x, tf_y = collections.Counter(bag1), collections.Counter(bag2)
+    tf_x, tf_y = collections.Counter(x_tok), collections.Counter(y_tok)
     element_freq = {}
     total_unique_elements = set()
     for document in corpus_list:
         temp_set = set()
         for element in document:
-            if element in bag1 or element in bag2:
+            if element in x_tok or element in y_tok:
                 temp_set.add(element)
                 total_unique_elements.add(element)
         for element in temp_set:
@@ -638,14 +638,14 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     return sim
 
 
-def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
+def soft_tfidf(x_tok, y_tok, corpus_list=None, sim_func=jaro, threshold=0.5):
     """
     Compute Soft-tfidf measures between two lists given the corpus information.
     This measure is similar in spirit to the generalized Jaccard measure, except that it uses the TF/IDF measure
     instead of Jaccard measure as the higher level similarity measure.
 
     Args:
-        bag1, bag2 (list): Input lists of strings
+        x_tok, y_tok (list): Input lists of strings
 
         corpus_list (list of lists): Corpus list (default is set to None) of strings. If set to None,
             the input list are considered the only corpus
@@ -675,31 +675,31 @@ def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
     References:
         * Principles of Data Integration book
     """
-    utils.sim_check_for_none(bag1, bag2)
-    utils.sim_check_for_list_or_set_inputs(bag1, bag2)
-    if utils.sim_check_for_exact_match(bag1, bag2):
+    utils.sim_check_for_none(x_tok, y_tok)
+    utils.sim_check_for_list_or_set_inputs(x_tok, y_tok)
+    if utils.sim_check_for_exact_match(x_tok, y_tok):
         return 1.0
-    if utils.sim_check_for_empty(bag1, bag2):
+    if utils.sim_check_for_empty(x_tok, y_tok):
         return 0
     if corpus_list is None:
-        corpus_list = [bag1, bag2]
+        corpus_list = [x_tok, y_tok]
     corpus_size = len(corpus_list) * 1.0
-    tf_x, tf_y = collections.Counter(bag1), collections.Counter(bag2)
+    tf_x, tf_y = collections.Counter(x_tok), collections.Counter(y_tok)
     element_freq = {}
     total_unique_elements = set()
     for document in corpus_list:
         temp_set = set()
         for element in document:
-            if element in bag1 or element in bag2:
+            if element in x_tok or element in y_tok:
                 temp_set.add(element)
                 total_unique_elements.add(element)
         for element in temp_set:
             element_freq[element] = element_freq[element]+1 if element in element_freq else 1
     similarity_map = {}
-    for x in bag1:
+    for x in x_tok:
         if x not in similarity_map:
             max_score = 0.0
-            for y in bag2:
+            for y in y_tok:
                 score = sim_func(x,y)
                 if score > threshold and score > max_score:
                     similarity_map[x] = utils.Similarity(x, y, score)
