@@ -28,8 +28,7 @@ setup(
         install_requires=[
             'numpy >= 1.7.0',
             'six',
-            'python-Levenshtein >= 0.12.0',
-            'Cython >= 0.23.0'
+            'python-Levenshtein >= 0.12.0'
         ],
         include_package_data=True,
         zip_safe=False

@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tokenizers &mdash; py_stringmatching 0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="py_stringmatching 0.1 documentation" href="index.html"/>
+        <link rel="up" title="API" href="API.html"/>
+        <link rel="next" title="Similarity Functions" href="Simfunctions.html"/>
+        <link rel="prev" title="API" href="API.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> py_stringmatching</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Installation.html#step-by-step-installation-instruction">Step by Step Installation Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Installation.html#supported-platforms">Supported Platforms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Tokenizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Simfunctions.html">Similarity Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">py_stringmatching</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="API.html">API</a> &raquo;</li>
+      
+    <li>Tokenizers</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/Tokenizers.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-py_stringmatching.tokenizers">
+<span id="tokenizers"></span><h1>Tokenizers<a class="headerlink" href="#module-py_stringmatching.tokenizers" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="py_stringmatching.tokenizers.delimiter">
+<code class="descclassname">py_stringmatching.tokenizers.</code><code class="descname">delimiter</code><span class="sig-paren">(</span><em>input_string</em>, <em>delim_str=' '</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringmatching/tokenizers.html#delimiter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringmatching.tokenizers.delimiter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes input string based on the given delimiter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_string</strong> (<em>str</em>) &#8211; Input string</li>
+<li><strong>delim_str</strong> (<em>str</em>) &#8211; Delimiter string</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token list (list)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> &#8211;
+If the input is not string</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">delimiter</span><span class="p">(</span><span class="s">&#39;data science&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data&#39;, &#39;science&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delimiter</span><span class="p">(</span><span class="s">&#39;data$#$science&#39;</span><span class="p">,</span> <span class="s">&#39;$#$&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data&#39;, &#39;science&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delimiter</span><span class="p">(</span><span class="s">&#39;data science&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data science&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py_stringmatching.tokenizers.whitespace">
+<code class="descclassname">py_stringmatching.tokenizers.</code><code class="descname">whitespace</code><span class="sig-paren">(</span><em>input_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringmatching/tokenizers.html#whitespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringmatching.tokenizers.whitespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes input string based on white space.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_string</strong> (<em>str</em>) &#8211; Input string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Token list (list)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> &#8211;
+If the input is not string</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">whitespace</span><span class="p">(</span><span class="s">&#39;data science&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data&#39;, &#39;science&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">whitespace</span><span class="p">(</span><span class="s">&#39;data        science&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data&#39;, &#39;science&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">whitespace</span><span class="p">(</span><span class="s">&#39;data    science&#39;</span><span class="p">)</span>
+<span class="go">[&#39;data&#39;, &#39;science&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py_stringmatching.tokenizers.qgram">
+<code class="descclassname">py_stringmatching.tokenizers.</code><code class="descname">qgram</code><span class="sig-paren">(</span><em>input_string</em>, <em>qval=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py_stringmatching/tokenizers.html#qgram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py_stringmatching.tokenizers.qgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes input string into q-grams.</p>
+<p>A q-gram is defined as all sequences of q characters. Q-grams are also known as n-grams and
+k-grams.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_string</strong> (<em>str</em>) &#8211; Input string</li>
+<li><strong>qval</strong> (<em>int</em>) &#8211; Q-gram length (defaults to 2)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token list (list)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> &#8211;
+If the input is not string</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">qgram</span><span class="p">(</span><span class="s">&#39;database&#39;</span><span class="p">)</span>
+<span class="go">[&#39;da&#39;,&#39;at&#39;,&#39;ta&#39;,&#39;ab&#39;,&#39;ba&#39;,&#39;as&#39;,&#39;se&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qgram</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qgram</span><span class="p">(</span><span class="s">&#39;database&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[&#39;dat&#39;, &#39;ata&#39;, &#39;tab&#39;, &#39;aba&#39;, &#39;bas&#39;, &#39;ase&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Simfunctions.html" class="btn btn-neutral float-right" title="Similarity Functions">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="API.html" class="btn btn-neutral" title="API"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Magellan Team.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

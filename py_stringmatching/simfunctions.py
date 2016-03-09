@@ -523,7 +523,7 @@ def tfidf(bag1, bag2, corpus_list = None, dampen=False):
     The intuition underlying the TF/IDF measure is that two strings are similar if they share distinguishing terms.
 
     Args:
-        bag1, bag2 (list): Input lists of Strings
+        bag1,bag2 (list): Input lists
 
         corpus_list (list of lists): Corpus list (default is set to None) of strings. If set to None,
             the input list are considered the only corpus.
@@ -642,9 +642,8 @@ def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
     """
     Compute Soft-tfidf measures between two lists given the corpus information.
 
-
     Args:
-        bag1, bag2 (list): Input lists of strings
+        bag1,bag2 (list): Input lists
 
         corpus_list (list of lists): Corpus list (default is set to None) of strings. If set to None,
             the input list are considered the only corpus
