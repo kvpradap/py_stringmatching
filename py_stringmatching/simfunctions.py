@@ -641,8 +641,7 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
 def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
     """
     Compute Soft-tfidf measures between two lists given the corpus information.
-    This measure is similar in spirit to the generalized Jaccard measure, except that it uses the TF/IDF measure
-    instead of Jaccard measure as the higher level similarity measure.
+
 
     Args:
         bag1, bag2 (list): Input lists of strings
