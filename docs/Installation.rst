@@ -23,7 +23,7 @@ Dependencies
 Step by Step Installation Instruction
 -------------------------------------
 Step 1: Download the py_stringmatching package from `here
-<http://pradap-www.cs.wisc.edu/magellan/py_stringmatching-0.1.tar.gz>`_
+<http://pradap-www.cs.wisc.edu/py_stringmatching/py_stringmatching-0.1.tar.gz>`_
 into your home directory.
 
 You can download into any directory within your home directory. For now we assume that you use a
