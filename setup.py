@@ -6,12 +6,6 @@ from setuptools import setup
 # Set it to 'auto' to build with Cython if available, otherwise
 # from the C file.
 
-
-
-import sys
-
-
-
 setup(
         name='py_stringmatching',
         version='0.1',
