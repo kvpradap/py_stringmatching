@@ -10,9 +10,9 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
+#build/
 develop-eggs/
-dist/
+#dist/
 downloads/
 eggs/
 .eggs/
@@ -53,7 +53,7 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/_build/
+#docs/_build/
 
 # PyBuilder
 target/
@@ -71,8 +71,8 @@ pip-selfcheck.json
 .ipynb_checkpoints/
 
 # idea
-.idea
+#.idea
 
 #scratch
-scratch
+#scratch
 # Created by .ignore support plugin (hsz.mobi)
