@@ -20,7 +20,7 @@ def qgram(input_string, qval=2):
         Token list (list)
 
     Raises:
-        TypeError : If the input is not string
+        TypeError : If the input is not a string
 
     Examples:
         >>> qgram('database')
@@ -58,7 +58,7 @@ def delimiter(input_string, delim_str=' '):
         Token list (list)
 
     Raises:
-        TypeError : If the input is not string
+        TypeError : If the input is not a string
 
     Examples:
         >>> delimiter('data science')
@@ -86,7 +86,7 @@ def whitespace(input_string):
         Token list (list)
 
     Raises:
-        TypeError : If the input is not string
+        TypeError : If the input is not a string
 
     Examples:
         >>> whitespace('data science')
