@@ -10,8 +10,8 @@ install:
 
 script:
   - nosetests
-  - coverage run py_stringmatching/tests/test_simfunctions.py
-  - coverage run py_stringmatching/tests/test_tokenizers.py
+#  - coverage run py_stringmatching/tests/test_simfunctions.py
+#  - coverage run py_stringmatching/tests/test_tokenizers.py
 
 after_success:
   - codecov
