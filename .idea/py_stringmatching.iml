@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/muruga" />
+      <excludeFolder url="file://$MODULE_DIR$/scratch" />
     </content>
     <orderEntry type="jdk" jdkName="Python 2.7.9 (~/anaconda/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
