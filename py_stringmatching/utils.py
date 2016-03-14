@@ -1,4 +1,5 @@
 import functools
+
 import six
 
 """
@@ -18,6 +19,7 @@ def _sim_check_for_list_or_set_inputs(func):
             if not isinstance(args[1], set):
                 raise TypeError('Second argument is expected to be a python list or set')
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -29,8 +31,8 @@ def _sim_check_for_string_inputs(func):
         if not isinstance(args[1], six.string_types):
             raise TypeError('Second argument is expected to be a string')
         return func(*args, **kwargs)
-    return decorator
 
+    return decorator
 
 
 def _sim_check_for_same_len(func):
@@ -43,6 +45,7 @@ def _sim_check_for_same_len(func):
         if len(args[0]) != len(args[1]):
             raise ValueError("Undefined for sequences of unequal length")
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -52,6 +55,7 @@ def _sim_check_for_exact_match(func):
         if args[0] == args[1]:
             return 1.0
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -61,6 +65,7 @@ def _sim_check_for_empty(func):
         if len(args[0]) == 0 or len(args[1]) == 0:
             return 0
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -72,6 +77,7 @@ def _sim_check_for_none(func):
         if args[1] is None:
             raise TypeError("string2 is None")
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -82,7 +88,9 @@ def _tok_check_for_none(func):
         if args[0] is None:
             return empty_list
         return func(*args, **kwargs)
+
     return decorator
+
 
 def _tok_check_for_string_input(func):
     @functools.wraps(func)
@@ -90,6 +98,7 @@ def _tok_check_for_string_input(func):
         if not isinstance(args[0], six.string_types):
             raise TypeError('Input is expected to be a string')
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -148,9 +157,6 @@ class Similarity:
         self.second_string = string2
         self.similarity_score = score
 
-
-
-
 # # check for NaNs
 # def check_strings_for_nulls(func):
 #     @functools.wraps(func)
@@ -178,5 +184,3 @@ class Similarity:
 #             return np.NaN
 #         return func(*args, **kwargs)
 #     return decorator
-
-

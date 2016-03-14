@@ -6,8 +6,6 @@ from . import _short_string_1, _long_string_1, _medium_string_1, _short_string_2
 from . import _small_num_tokens_wi_rep, _small_num_tokens_wo_rep, _med_num_tokens_wi_rep, _med_num_tokens_wo_rep, \
     _large_num_tokens_wi_rep, _large_num_tokens_wo_rep, _long_hamm_string1, _long_hamm_string2
 
-import Levenshtein
-
 
 class TimeAffine:
     def time_short_short(self):
@@ -79,14 +77,15 @@ class TimeHammingDistance:
     def time_long_long(self):
         simfunctions.hamming_distance(_long_hamm_string1, _long_hamm_string2)
 
-    # def time_short_medium(self):
-    #     simfunctions.hamming_distance(_short_string_1, _medium_string_1)
-    #
-    # def time_short_long(self):
-    #     simfunctions.hamming_distance(_short_string_1, _long_string_1)
-    #
-    # def time_medium_long(self):
-    #     simfunctions.hamming_distance(_medium_string_1, _long_string_1)
+        # def time_short_medium(self):
+        #     simfunctions.hamming_distance(_short_string_1, _medium_string_1)
+        #
+        # def time_short_long(self):
+        #     simfunctions.hamming_distance(_short_string_1, _long_string_1)
+        #
+        # def time_medium_long(self):
+        #     simfunctions.hamming_distance(_medium_string_1, _long_string_1)
+
 
 #
 # class TimeJaro1:
@@ -308,9 +307,11 @@ class TimeMongeElkan:
     def time_small_medium_wi_rep(self):
         simfunctions.monge_elkan(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep)
 
+
 class TimeTfIdf:
     corpus_list = [_small_num_tokens_wo_rep, _small_num_tokens_wi_rep, _med_num_tokens_wi_rep, _med_num_tokens_wo_rep,
                    _large_num_tokens_wo_rep, _large_num_tokens_wi_rep]
+
     def time_small_small_wo_rep_no_corpus_no_dampen(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _small_num_tokens_wo_rep)
 
@@ -335,7 +336,6 @@ class TimeTfIdf:
     def time_small_medium_wi_rep_no_corpus_no_dampen(self):
         simfunctions.tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep)
 
-
     def time_small_large_wo_rep_no_corpus_no_dampen(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep)
 
@@ -347,6 +347,7 @@ class TimeTfIdf:
 
     def time_medium_large_wi_rep_no_corpus_no_dampen(self):
         simfunctions.tfidf(_med_num_tokens_wo_rep, _large_num_tokens_wo_rep)
+
     # dampen - true
     def time_small_small_wo_rep_no_corpus(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _small_num_tokens_wo_rep, dampen=True)
@@ -371,7 +372,6 @@ class TimeTfIdf:
 
     def time_small_medium_wi_rep_no_corpus(self):
         simfunctions.tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep, dampen=True)
-
 
     def time_small_large_wo_rep_no_corpus(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep, dampen=True)
@@ -409,7 +409,6 @@ class TimeTfIdf:
 
     def time_small_medium_wi_rep_no_dampen(self):
         simfunctions.tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep, corpus_list=self.corpus_list)
-
 
     def time_small_large_wo_rep_no_dampen(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep, corpus_list=self.corpus_list)
@@ -454,7 +453,6 @@ class TimeTfIdf:
     def time_small_medium_wi_rep(self):
         simfunctions.tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep, corpus_list=self.corpus_list, dampen=True)
 
-
     def time_small_large_wo_rep(self):
         simfunctions.tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep, corpus_list=self.corpus_list,
                            dampen=True)
@@ -468,6 +466,7 @@ class TimeTfIdf:
 
     def time_medium_large_wi_rep(self):
         simfunctions.tfidf(_med_num_tokens_wo_rep, _large_num_tokens_wo_rep, corpus_list=self.corpus_list, dampen=True)
+
 
 class TimeSoftTfIdf:
     corpus_list = [_small_num_tokens_wo_rep, _small_num_tokens_wi_rep, _med_num_tokens_wi_rep, _med_num_tokens_wo_rep,
@@ -498,7 +497,6 @@ class TimeSoftTfIdf:
     def time_small_medium_wi_rep_no_corpus(self):
         simfunctions.soft_tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep)
 
-
     def time_small_large_wo_rep_no_corpus(self):
         simfunctions.soft_tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep)
 
@@ -510,7 +508,6 @@ class TimeSoftTfIdf:
 
     def time_medium_large_wi_rep_no_corpus(self):
         simfunctions.soft_tfidf(_med_num_tokens_wo_rep, _large_num_tokens_wo_rep)
-
 
     # with corpus list
     def time_small_small_wo_rep(self):
@@ -536,7 +533,6 @@ class TimeSoftTfIdf:
 
     def time_small_medium_wi_rep(self):
         simfunctions.soft_tfidf(_small_num_tokens_wi_rep, _med_num_tokens_wi_rep, corpus_list=self.corpus_list)
-
 
     def time_small_large_wo_rep(self):
         simfunctions.soft_tfidf(_small_num_tokens_wo_rep, _large_num_tokens_wo_rep, corpus_list=self.corpus_list)

@@ -2,16 +2,20 @@
 from __future__ import division
 from __future__ import unicode_literals
 
+import collections
+import math
+
 import Levenshtein
-import math, collections
+import numpy as np
 
 from py_stringmatching import utils
-import numpy as np
+# noinspection PyProtectedMember,PyProtectedMember
 from .compat import _range
 
 
 def sim_ident(s1, s2):
     return int(s1 == s2)
+
 
 # ---------------------- sequence based similarity measures  ----------------------
 
@@ -46,7 +50,7 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
         1.5
         >>> affine('dva', 'deeve', gap_start=2, gap_continuation=0.5)
         -0.5
-        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2 : (int(1 if s1 == s2 else 0)))
+        >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0)))
         4.4
     """
     utils.sim_check_for_none(string1, string2)
@@ -56,29 +60,30 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
 
     gap_start = -gap_start
     gap_continuation = -gap_continuation
-    M = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-    X = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-    Y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    m = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    x = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
 
     for i in _range(1, len(string1) + 1):
-        M[i][0] = -float("inf")
-        X[i][0] = gap_start + (i - 1) * gap_continuation
-        Y[i][0] = -float("inf")
+        m[i][0] = -float("inf")
+        x[i][0] = gap_start + (i - 1) * gap_continuation
+        y[i][0] = -float("inf")
 
     for j in _range(1, len(string2) + 1):
-        M[0][j] = -float("inf")
-        X[0][j] = -float("inf")
-        Y[0][j] = gap_start + (j - 1) * gap_continuation
+        m[0][j] = -float("inf")
+        x[0][j] = -float("inf")
+        y[0][j] = gap_start + (j - 1) * gap_continuation
 
     for i in _range(1, len(string1) + 1):
         for j in _range(1, len(string2) + 1):
-            M[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(M[i - 1][j - 1], X[i - 1][j - 1], Y[i - 1][j - 1])
-            X[i][j] = max(gap_start + M[i - 1][j], gap_continuation + X[i - 1][j])
-            Y[i][j] = max(gap_start + M[i][j - 1], gap_continuation + Y[i][j - 1])
-    return max(M[len(string1)][len(string2)], X[len(string1)][len(string2)], Y[len(string1)][len(string2)])
+            m[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(m[i - 1][j - 1], x[i - 1][j - 1], y[i - 1][j - 1])
+            x[i][j] = max(gap_start + m[i - 1][j], gap_continuation + x[i - 1][j])
+            y[i][j] = max(gap_start + m[i][j - 1], gap_continuation + y[i][j - 1])
+    return max(m[len(string1)][len(string2)], x[len(string1)][len(string2)], y[len(string1)][len(string2)])
 
 
 # jaro
+# noinspection PyUnboundLocalVariable,PyUnboundLocalVariable,PyUnboundLocalVariable,PyUnboundLocalVariable
 def jaro(string1, string2):
     """
     Computes the Jaro measure between two strings.
@@ -515,7 +520,8 @@ def overlap_coefficient(set1, set2):
 
 
 # ---------------------- bag based similarity measures  ----------------------
-def tfidf(bag1, bag2, corpus_list = None, dampen=False):
+# noinspection PyArgumentList,PyArgumentList
+def tfidf(bag1, bag2, corpus_list=None, dampen=False):
     """
     Compute tfidf measures between two lists given the corpus information.
     This measure employs the notion of TF/IDF score commonly used in information retrieval (IR) to find documents that
@@ -570,16 +576,18 @@ def tfidf(bag1, bag2, corpus_list = None, dampen=False):
                 temp_set.add(element)
                 total_unique_elements.add(element)
         for element in temp_set:
-            element_freq[element] = element_freq[element]+1 if element in element_freq else 1
+            element_freq[element] = element_freq[element] + 1 if element in element_freq else 1
     idf_element, v_x, v_y, v_x_y, v_x_2, v_y_2 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
     for element in total_unique_elements:
         idf_element = corpus_size * 1.0 / element_freq[element]
-        v_x = 0 if element not in tf_x else (math.log(idf_element) * math.log(tf_x[element] + 1)) if dampen else (idf_element * tf_x[element])
-        v_y = 0 if element not in tf_y else (math.log(idf_element) * math.log(tf_y[element] + 1)) if dampen else (idf_element * tf_y[element])
+        v_x = 0 if element not in tf_x else (math.log(idf_element) * math.log(tf_x[element] + 1)) if dampen else (
+            idf_element * tf_x[element])
+        v_y = 0 if element not in tf_y else (math.log(idf_element) * math.log(tf_y[element] + 1)) if dampen else (
+            idf_element * tf_y[element])
         v_x_y += v_x * v_y
         v_x_2 += v_x * v_x
         v_y_2 += v_y * v_y
-    return 0.0 if v_x_y == 0 else v_x_y/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
+    return 0.0 if v_x_y == 0 else v_x_y / (math.sqrt(v_x_2) * math.sqrt(v_y_2))
 
 
 # hybrid similarity measures
@@ -638,6 +646,7 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     return sim
 
 
+# noinspection PyArgumentList,PyArgumentList
 def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
     """
     Compute Soft-tfidf measures between two lists given the corpus information.
@@ -692,13 +701,13 @@ def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
                 temp_set.add(element)
                 total_unique_elements.add(element)
         for element in temp_set:
-            element_freq[element] = element_freq[element]+1 if element in element_freq else 1
+            element_freq[element] = element_freq[element] + 1 if element in element_freq else 1
     similarity_map = {}
     for x in bag1:
         if x not in similarity_map:
             max_score = 0.0
             for y in bag2:
-                score = sim_func(x,y)
+                score = sim_func(x, y)
                 if score > threshold and score > max_score:
                     similarity_map[x] = utils.Similarity(x, y, score)
                     max_score = score
@@ -720,4 +729,4 @@ def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
         v_x_2 += v_x * v_x
         v_y = 0 if element not in tf_y else idf * tf_y[element]
         v_y_2 += v_y * v_y
-    return result if v_x_2 == 0 else result/(math.sqrt(v_x_2) * math.sqrt(v_y_2))
+    return result if v_x_2 == 0 else result / (math.sqrt(v_x_2) * math.sqrt(v_y_2))

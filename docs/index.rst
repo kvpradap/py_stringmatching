@@ -1,15 +1,14 @@
-
 Welcome to py_stringmatching's documentation!
 =============================================
 
 Contents:
 
 .. toctree::
-    :maxdepth: 2
+:maxdepth: 2
 
-    Installation
-    Tutorial
-    API
+        Installation
+        Tutorial
+        API
 
 Indices and tables
 ==================

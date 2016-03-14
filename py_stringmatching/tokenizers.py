@@ -1,5 +1,5 @@
-from .compat import _range
 from py_stringmatching import utils
+from .compat import _range
 
 
 # @todo: add examples in the comments
@@ -40,7 +40,7 @@ def qgram(input_string, qval=2):
     if len(input_string) < qval or qval < 1:
         return qgram_list
 
-    qgram_list = [input_string[i:i+qval] for i in _range(len(input_string)-(qval-1))]
+    qgram_list = [input_string[i:i + qval] for i in _range(len(input_string) - (qval - 1))]
     return qgram_list
 
 
@@ -101,5 +101,3 @@ def whitespace(input_string):
     utils.tok_check_for_string_input(input_string)
 
     return input_string.split()
-
-
