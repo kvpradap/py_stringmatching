@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import unittest
 from nose.tools import *
 
 from py_stringmatching.tokenizers import qgram, delimiter, whitespace

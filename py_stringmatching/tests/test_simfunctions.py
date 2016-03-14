@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
 
 import math
+import unittest
 
 from nose.tools import *
+
+
 # sequence based similarity measures
 from py_stringmatching.simfunctions import levenshtein, jaro, jaro_winkler, hamming_distance, needleman_wunsch, \
     smith_waterman, affine
