@@ -53,8 +53,10 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
         >>> affine('AAAGAATTCA', 'AAATCA', gap_continuation=0.2, sim_score=lambda s1, s2: (int(1 if s1 == s2 else 0)))
         4.4
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.tok_check_for_string_input(string1, string2)
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(string1, string2):
         return 0
 
@@ -63,21 +65,24 @@ def affine(string1, string2, gap_start=1, gap_continuation=0.5, sim_score=sim_id
     m = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     x = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     y = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
-
+    # DP initialization
     for i in _range(1, len(string1) + 1):
         m[i][0] = -float("inf")
         x[i][0] = gap_start + (i - 1) * gap_continuation
         y[i][0] = -float("inf")
-
+    # DP initialization
     for j in _range(1, len(string2) + 1):
         m[0][j] = -float("inf")
         x[0][j] = -float("inf")
         y[0][j] = gap_start + (j - 1) * gap_continuation
-
+    # affine gap calculation using DP
     for i in _range(1, len(string1) + 1):
         for j in _range(1, len(string2) + 1):
+            # best score between x_1....x_i and y_1....y_j given that x_i is aligned to y_j
             m[i][j] = sim_score(string1[i - 1], string2[j - 1]) + max(m[i - 1][j - 1], x[i - 1][j - 1], y[i - 1][j - 1])
+            # the best score given that x_i is aligned to a gap
             x[i][j] = max(gap_start + m[i - 1][j], gap_continuation + x[i - 1][j])
+            # the best score given that y_j is aligned to a gap
             y[i][j] = max(gap_start + m[i][j - 1], gap_continuation + y[i][j - 1])
     return max(m[len(string1)][len(string2)], x[len(string1)][len(string2)], y[len(string1)][len(string2)])
 
@@ -113,8 +118,10 @@ def jaro(string1, string2):
 
 
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.tok_check_for_string_input(string1, string2)
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(string1, string2):
         return 0
 
@@ -140,7 +147,6 @@ def jaro(string1, string2):
                 break
     if not common_chars:
         return 0
-
     k = trans_count = 0
     for i, f_s1 in enumerate(flags_s1):
         if f_s1:
@@ -151,9 +157,6 @@ def jaro(string1, string2):
             if string1[i] != string2[j]:
                 trans_count += 1
     trans_count /= 2
-    # print trans_count, common_chars
-
-
     common_chars = float(common_chars)
     weight = ((common_chars / len_s1 + common_chars / len_s2 +
                (common_chars - trans_count) / common_chars)) / 3
@@ -190,20 +193,22 @@ def jaro_winkler(string1, string2, prefix_weight=0.1):
         0.8133333333333332
 
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.tok_check_for_string_input(string1, string2)
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(string1, string2):
         return 0
 
     jw_score = jaro(string1, string2)
     min_len = min(len(string1), len(string2))
+    # prefix length can be at max 4
     j = min(min_len, 4)
     i = 0
     while i < j and string1[i] == string2[i] and string1[i]:
         i += 1
     if i:
         jw_score += i * prefix_weight * (1 - jw_score)
-
     return jw_score
 
 
@@ -237,9 +242,13 @@ def hamming_distance(string1, string2):
         >>> hamming_distance('JOHN', 'john')
         4
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.tok_check_for_string_input(string1, string2)
+    # for Hamming Distance string length should be same
     utils.sim_check_for_same_len(string1, string2)
+    # sum all the mismatch characters at the corresponding index of
+    # input strings
     return sum(bool(ord(c1) - ord(c2)) for c1, c2 in zip(string1, string2))
 
 
@@ -273,9 +282,10 @@ def levenshtein(string1, string2):
         This implementation internally uses python-levenshtein package to compute the Levenshtein distance
 
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.sim_check_for_string_inputs(string1, string2)
-
+    # using Levenshtein library
     return Levenshtein.distance(string1, string2)
 
 
@@ -316,14 +326,18 @@ def needleman_wunsch(string1, string2, gap_cost=1.0, sim_score=sim_ident):
         >>> needleman_wunsch('GCATGCUA', 'GATTACA', gap_cost=0.5, sim_score=lambda s1, s2 : (1.0 if s1 == s2 else -1.0))
         2.5
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.sim_check_for_string_inputs(string1, string2)
 
     dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
+    # DP initialization
     for i in _range(len(string1) + 1):
         dist_mat[i, 0] = -(i * gap_cost)
+    # DP initialization
     for j in _range(len(string2) + 1):
         dist_mat[0, j] = -(j * gap_cost)
+    # Needleman-Wunsch DP calculation
     for i in _range(1, len(string1) + 1):
         for j in _range(1, len(string2) + 1):
             match = dist_mat[i - 1, j - 1] + sim_score(string1[i - 1], string2[j - 1])
@@ -366,11 +380,13 @@ def smith_waterman(string1, string2, gap_cost=1.0, sim_score=sim_ident):
         >>> smith_waterman('GCATAGCU', 'GATTACA', gap_cost=1.4, sim_score=lambda s1, s2 : (1.5 if s1 == s2 else 0.5))
         6.5
     """
+    # input validations
     utils.sim_check_for_none(string1, string2)
     utils.sim_check_for_string_inputs(string1, string2)
 
     dist_mat = np.zeros((len(string1) + 1, len(string2) + 1), dtype=np.float)
     max_value = 0
+    # Smith Waterman DP calculations
     for i in _range(1, len(string1) + 1):
         for j in _range(1, len(string2) + 1):
             match = dist_mat[i - 1, j - 1] + sim_score(string1[i - 1], string2[j - 1])
@@ -414,10 +430,13 @@ def cosine(set1, set2):
         * String similarity joins: An Experimental Evaluation (VLDB 2014)
         * Project flamingo : Mike carey, Vernica
     """
+    # input validations
     utils.sim_check_for_none(set1, set2)
     utils.sim_check_for_list_or_set_inputs(set1, set2)
+    # if exact match return 1.0
     if utils.sim_check_for_exact_match(set1, set2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(set1, set2):
         return 0
     if not isinstance(set1, set):
@@ -458,10 +477,13 @@ def jaccard(set1, set2):
         >>> jaccard(['data', 'management'], ['data', 'data', 'science'])
         0.3333333333333333
     """
+    # input validations
     utils.sim_check_for_none(set1, set2)
     utils.sim_check_for_list_or_set_inputs(set1, set2)
+    # if exact match return 1.0
     if utils.sim_check_for_exact_match(set1, set2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(set1, set2):
         return 0
     if not isinstance(set1, set):
@@ -505,10 +527,13 @@ def overlap_coefficient(set1, set2):
         * Simmetrics library
 
     """
+    # input validations
     utils.sim_check_for_none(set1, set2)
     utils.sim_check_for_list_or_set_inputs(set1, set2)
+    # if exact match return 1.0
     if utils.sim_check_for_exact_match(set1, set2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(set1, set2):
         return 0
     if not isinstance(set1, set):
@@ -557,27 +582,37 @@ def tfidf(bag1, bag2, corpus_list=None, dampen=False):
         >>> tfidf(['a', 'b', 'a'], ['a'])
         0.7071067811865475
     """
+    # input validations
     utils.sim_check_for_none(bag1, bag2)
     utils.sim_check_for_list_or_set_inputs(bag1, bag2)
+    # if the strings match exactly return 1.0
     if utils.sim_check_for_exact_match(bag1, bag2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(bag1, bag2):
         return 0
+    # if corpus is not provided treat input string as corpus
     if corpus_list is None:
         corpus_list = [bag1, bag2]
     corpus_size = len(corpus_list)
+    # term frequency for input strings
     tf_x, tf_y = collections.Counter(bag1), collections.Counter(bag2)
+    # number of documents an element appeared
     element_freq = {}
+    # set of unique element
     total_unique_elements = set()
     for document in corpus_list:
         temp_set = set()
         for element in document:
+            # adding element only if it is present in one of two input string
             if element in bag1 or element in bag2:
                 temp_set.add(element)
                 total_unique_elements.add(element)
+        # update element document frequency for this document
         for element in temp_set:
             element_freq[element] = element_freq[element] + 1 if element in element_freq else 1
     idf_element, v_x, v_y, v_x_y, v_x_2, v_y_2 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    # tfidf calculation
     for element in total_unique_elements:
         idf_element = corpus_size * 1.0 / element_freq[element]
         v_x = 0 if element not in tf_x else (math.log(idf_element) * math.log(tf_x[element] + 1)) if dampen else (
@@ -630,12 +665,17 @@ def monge_elkan(bag1, bag2, sim_func=jaro_winkler):
     References:
         * Principles of Data Integration book
     """
+    # input validations
     utils.sim_check_for_none(bag1, bag2)
     utils.sim_check_for_list_or_set_inputs(bag1, bag2)
+    # if exact match return 1.0
     if utils.sim_check_for_exact_match(bag1, bag2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(bag1, bag2):
         return 0
+    # aggregated sum of all the max sim score of all the elements in bag1
+    # with elements in bag2
     sum_of_maxes = 0
     for t1 in bag1:
         max_sim = float('-inf')
@@ -682,36 +722,48 @@ def soft_tfidf(bag1, bag2, corpus_list=None, sim_func=jaro, threshold=0.5):
     References:
         * Principles of Data Integration book
     """
+    # input validations
     utils.sim_check_for_none(bag1, bag2)
     utils.sim_check_for_list_or_set_inputs(bag1, bag2)
+    # if the strings match exactly return 1.0
     if utils.sim_check_for_exact_match(bag1, bag2):
         return 1.0
+    # if one of the strings is empty return 0
     if utils.sim_check_for_empty(bag1, bag2):
         return 0
+    # if corpus is not provided treat input string as corpus
     if corpus_list is None:
         corpus_list = [bag1, bag2]
     corpus_size = len(corpus_list) * 1.0
+    # term frequency for input strings
     tf_x, tf_y = collections.Counter(bag1), collections.Counter(bag2)
+    # number of documents an element appeared
     element_freq = {}
+    # set of unique element
     total_unique_elements = set()
     for document in corpus_list:
         temp_set = set()
         for element in document:
+            # adding element only if it is present in one of two input string
             if element in bag1 or element in bag2:
                 temp_set.add(element)
                 total_unique_elements.add(element)
+        # update element document frequency for this document
         for element in temp_set:
             element_freq[element] = element_freq[element] + 1 if element in element_freq else 1
     similarity_map = {}
+    # calculating the term sim score against the input string 2, construct similarity map
     for x in bag1:
         if x not in similarity_map:
             max_score = 0.0
             for y in bag2:
                 score = sim_func(x, y)
+                # adding sim only if it is above threshold and highest for this element
                 if score > threshold and score > max_score:
                     similarity_map[x] = utils.Similarity(x, y, score)
                     max_score = score
     result, v_x_2, v_y_2 = 0.0, 0.0, 0.0
+    # soft-tfidf calculation
     for element in total_unique_elements:
         # numerator
         if element in similarity_map:
