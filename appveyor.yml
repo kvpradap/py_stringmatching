@@ -25,7 +25,7 @@ environment:
 
 install:
   # this installs the appropriate Miniconda (Py2/Py3, 32/64 bit)
-  - powershell .\\continuous-integration\\appveyor\\install.ps1
+  #- powershell .\\continuous-integration\\appveyor\\install.ps1
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Don't install from requirements-pip.txt, python-coveralls has broken dependencies on windows it seems.
@@ -38,11 +38,11 @@ build: false
 test_script:
   # Nosetests take care of unit tests
   # Behave runs the example scripts and tries to verify if it produces the right output
-  - nosetests -vv
-  - behave --tags ~@skip # Everything without the tag @skip
+  - nosetests
+  #- behave --tags ~@skip # Everything without the tag @skip
 
 on_success:
   # Could run coveralls here but will leave that to travis tests
   - echo Build succesful!
-  - coverage report
+  #- coverage report
   # coveralls
